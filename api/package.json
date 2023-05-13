@@ -1,8 +1,12 @@
 {
   "name": "app",
-  "version": "2.0.0",
+  "version": "10.1.0",
   "description": "CISO360AI",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ciso360ai/directus-mod.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npx directus bootstrap; npx directus start"
@@ -11,7 +15,10 @@
   "author": "CISO360AI",
   "license": "MIT",
   "dependencies": {
-    "directus": "^9.22.4",
-    "pg": "^8.8.0"
+    "directus": "10.1.0",
+    "pg": "^8.10.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

@@ -20,7 +20,7 @@ RUN mkdir out && \
     ; done
 
 # FROM node:16-alpine
-FROM ciso360ai/directus-mod:9.22.4-mod
+FROM ciso360ai/directus-mod:latest
 
 WORKDIR /directus
 USER root
@@ -40,7 +40,12 @@ ADD ./uploads ./uploads/
 
 COPY --from=build /home/app/out /tmp/available
 
-RUN npm install
+# Currently required, check if needed in future release
+RUN corepack enable \
+  && corepack prepare pnpm@8.1.1 --activate \
+  && chown node:node /directus
+
+RUN pnpm install --prefer-offline        
 
 EXPOSE 8055
 
