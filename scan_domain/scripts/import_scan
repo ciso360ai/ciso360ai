@@ -1,0 +1,55 @@
+#!/usr/bin/python3
+
+import sys
+import os
+import psycopg2
+from urllib.parse import urlparse
+
+target = sys.argv[1]
+
+#Establishing the connection
+conn = psycopg2.connect(
+   host = os.environ['POSTGRES_HOST'],
+   database = os.environ['POSTGRES_DB'],
+   port = os.environ['POSTGRES_PORT'],
+   user = os.environ['POSTGRES_USER'],
+   password = os.environ['POSTGRES_PASSWORD']
+)
+conn.autocommit = True
+cursor = conn.cursor()
+
+add_domain = '''INSERT into domains (domain) VALUES ( %s ) ON CONFLICT DO NOTHING'''
+cursor.execute(add_domain, (target,))
+
+#Add scan
+scan_id = None
+scan_name = 'manual scan on: ' + target
+add_scan = '''INSERT into scans (name)
+              VALUES ((select id from domains where domain = %s)) ON CONFLICT ON CONSTRAINT scans_name_unique DO UPDATE
+              SET date_updated= NOW()
+              RETURNING id'''
+cursor.execute(add_scan, (scan_name,))
+scan_id = cursor.fetchone()[0]
+
+print("scanid is", scan_id)
+
+#Process hosts
+results_file = '/results/' + target + '/domains.txt'
+file = open(results_file, 'r')
+lines = file.readlines()
+
+insert_hosts = '''INSERT into hosts ( scan_id, domain_id , hostname )
+                VALUES (%s, (select id from domains where domain = %s ), %s)'''
+
+for line in lines:
+    hostname = "{}".format(line.strip())
+    try:
+        cursor.execute(insert_hosts, (scan_id,target,hostname))
+        print("New hostname:",hostname)
+    except Exception as err:
+        conn.rollback()
+        print("Existing hostname:",hostname)
+
+file.close()
+
+conn.close()

@@ -1,0 +1,181 @@
+#!/usr/bin/python3
+
+import sys
+import os
+import psycopg2
+import json
+from urllib.parse import urlparse
+
+target = sys.argv[1]
+
+#Establishing the connection
+conn = psycopg2.connect(
+   host = os.environ['POSTGRES_HOST'],
+   database = os.environ['POSTGRES_DB'],
+   port = os.environ['POSTGRES_PORT'],
+   user = os.environ['POSTGRES_USER'],
+   password = os.environ['POSTGRES_PASSWORD']
+)
+conn.autocommit = True
+cursor = conn.cursor()
+
+# add_ip = '''INSERT into ips (ip) VALUES ( %s ) ON CONFLICT DO NOTHING'''
+# cursor.execute(add_ip, (ip,))
+
+#Add scan
+scan_id = None
+scan_name = 'manual scan on: ' + target
+add_scan = '''INSERT into scans (name)
+              VALUES (%s) ON CONFLICT ON CONSTRAINT scans_name_unique DO UPDATE
+              SET date_updated= NOW()
+              RETURNING id'''
+cursor.execute(add_scan, (scan_name,))
+scan_id = cursor.fetchone()[0]
+
+print("scanid is", scan_id)
+
+# update_ips = '''UPDATE ips
+#                         SET status = %s, date_updated= NOW()
+#                         WHERE ip = %s'''
+
+# status = "active"
+# cursor.execute(update_ips, (status,target))
+# print("Active ip:",target)
+
+#Processs ports JSON /results/$target/testssl.json
+results_file = '/results/' + target + '/testssl.json'
+#Processs JSON
+with open(results_file) as file:
+  file_contents = file.read()
+  
+parsed_json = json.loads(file_contents)
+
+ip = parsed_json['scanResult'][0]['ip']
+hostname = parsed_json['scanResult'][0]['targetHost']
+port = parsed_json['scanResult'][0]['port']
+vulnerabilities = parsed_json['scanResult'][0]['vulnerabilities']
+
+summary = "SSL/TLS vulnerabilties"
+severity = 1
+
+details = ''
+details += '<table>'
+details += '<tr><th>Vuln</th><th>Severity</th></tr>'
+for finding in vulnerabilities:
+    details += '<tr>'
+    details += '<td>' + finding['id'] + '</td>'
+    details += '<td>' + finding['severity'] + '</td>'
+    # if 'cve' in finding:
+    #     details += '<td>' + '<a href="https://nvd.nist.gov/vuln/detail/' + finding['cve'] + '">' + finding['cve'] + '</a>' + '</td>'
+    # else:
+    #     details += '<td>-</td>'
+    details += '</tr>'
+
+#find highest severity and set it for vuln level
+    if finding['severity'] == 'LOW' and severity == 1:
+        severity = 2 
+    if finding['severity'] == 'MEDIUM' and (severity == 1 or severity == 2):
+        severity = 3
+    if finding['severity'] == 'HIGH' and (severity == 1 or severity == 2 or severity == 3):
+        severity = 4
+
+details += '</table>'
+
+# {'id': 'CRIME_TLS', 'severity': 'OK', 'cve': 'CVE-2012-4929', 'cwe': 'CWE-310', 'finding': 'not vulnerable'} 
+
+add_ips = '''INSERT INTO ips (ip,scan_id) VALUES (%s,%s)'''
+add_ports = '''INSERT INTO ports (port,scan_id) VALUES (%s,%s)'''
+# update_domain_ips = '''INSERT INTO domains_ips (domain_id, ip_id) 
+#                 VALUES (
+#                     (SELECT id from domains where domain= %s ),
+#                     (SELECT id from ips where ip= %s )
+#                 )'''
+# update_domain_ports = '''INSERT INTO domains_ports (domain_id, port_id) 
+#                 VALUES (
+#                     (SELECT id from domains where domain= %s ),
+#                     (SELECT id from ports where port= %s )
+#                 )'''
+update_hostname_ips = '''INSERT INTO hosts_ips (hostname_id, ip_id) 
+                VALUES (
+                    (SELECT id from hosts where hostname= %s LIMIT 1 ),
+                    (SELECT min(id) from ips where ip= %s )
+                )'''
+update_hostname_ports = '''INSERT INTO hosts_ports (hostname_id, port_id) 
+                VALUES (
+                    (SELECT id from hosts where hostname= %s LIMIT 1),
+                    (SELECT id from ports where port= %s LIMIT 1)
+                )'''
+update_ips_ports = '''INSERT INTO ips_ports (ip_id, port_id) 
+                VALUES (
+                    (SELECT id from ips where ip= %s ),
+                    (SELECT id from ports where port= %s )
+                )'''
+
+if hostname == ip:
+    add_vulns = '''INSERT INTO vulnerabilities (ip_id, port_id, summary, severity, details) 
+                VALUES (
+                    (SELECT min(id) from ips where ip= %s ),
+                    (SELECT id from ports where port= %s LIMIT 1 ),
+                    %s,%s,%s
+                ) ON CONFLICT ON CONSTRAINT vulnerabilities_unique DO UPDATE
+                SET summary = EXCLUDED.summary, date_updated= NOW() RETURNING id'''
+else:
+    add_vulns = '''INSERT INTO vulnerabilities (hostname_id, ip_id, port_id, summary, severity, details) 
+                    VALUES (
+                        (SELECT id from hosts where hostname= %s ),
+                        (SELECT min(id) from ips where ip= %s ),
+                        (SELECT id from ports where port= %s LIMIT 1 ),
+                        %s,%s,%s
+                    ) ON CONFLICT ON CONSTRAINT vulnerabilities_unique DO UPDATE
+                    SET summary = EXCLUDED.summary, date_updated= NOW() RETURNING id'''
+
+update_scans_vulns = '''INSERT INTO scans_vulnerabilities (scan_id, vulnerability_id) VALUES (%s,%s)'''
+
+try:
+    cursor.execute(add_ips, (ip,scan_id))
+except Exception as err:
+    conn.rollback()
+    print("ERROR add ip",ip)
+
+try:
+    cursor.execute(add_ports, (port,scan_id))
+except Exception as err:
+    conn.rollback()
+    print("ERROR add port",port)
+
+if hostname != ip:
+    try:
+        cursor.execute(update_hostname_ips, (hostname,ip))
+        print("hostname/ip",hostname,ip)
+    except Exception as err:
+        conn.rollback()
+        print("hostname ERROR",hostname)
+    try:
+        cursor.execute(update_hostname_ports, (hostname,port))
+        print("hostname/port",hostname,port)
+    except Exception as err:
+        conn.rollback()
+        print("hostname ERROR",hostname)
+
+if hostname == ip:
+    try:
+        cursor.execute(add_vulns, (ip,port,summary,severity,details))
+        vuln_id = cursor.fetchone()[0]
+        print("ADDED vuln_id:",vuln_id)
+        cursor.execute(update_scans_vulns, (scan_id,vuln_id))
+    except Exception as err:
+        conn.rollback()
+        print("VULNS ERROR",ip)
+else:
+    try:
+        cursor.execute(add_vulns, (hostname,ip,port,summary,severity,details))
+        vuln_id = cursor.fetchone()[0]
+        print("ADDED vuln_id:",vuln_id)
+        cursor.execute(update_scans_vulns, (scan_id,vuln_id))
+    except Exception as err:
+        conn.rollback()
+        print("VULNS ERROR",ip)
+
+file.close()
+
+conn.close()

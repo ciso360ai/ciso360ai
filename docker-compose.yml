@@ -1,0 +1,177 @@
+version: "3"
+
+services:
+
+  rproxy:
+    # image: ciso360ai/rproxy:latest
+    build:
+      context: ./rproxy/.
+    container_name: rproxy
+    restart: always
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - PROXY=1
+      - BACKEND=http://api:8055
+      - SERVER_NAME=${SERVER_NAME}
+      - ALLOWED_METHODS=GET POST PUT OPTIONS PATCH DELETE
+      - ACCESSLOG=/var/log/apache2/access.log
+      - ERRORLOG=/var/log/apache2/error.log
+    volumes:
+      # - ./rproxy/certs/fullchain.pem:/usr/local/apache2/conf/server.crt:ro #enable only with certbot
+      # - ./rproxy/certs/privkey.pem:/usr/local/apache2/conf/server.key:ro #enable only with certbot
+      - ./rproxy/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./rproxy/apache/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
+      - ./rproxy/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf:/etc/modsecurity.d/owasp-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
+      - ./rproxy/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf:/etc/modsecurity.d/owasp-crs/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf
+      - ./rproxy/htdocs:/usr/local/apache2/htdocs
+      - ./rproxy/logs:/var/log/apache2
+    networks:
+      - proxy
+
+  api:
+    # image: ciso360ai/api:latest
+    build:
+      context: ./api/.
+    container_name: api
+    restart: always
+    depends_on:
+      cache:
+        condition: service_healthy
+      scan_tls:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8055:8055"
+    env_file:
+      - .env
+    environment:
+      - TELEMETRY="false"
+      # - LOGGER_HTTP_USE_LEVEL="silent" # DO NOT log api since rproxy logs traffic already 
+      - DB_CLIENT="pg"
+      - DB_HOST="postgres"
+      - DB_PORT=5432
+      - DB_DATABASE=${PG1_DB}
+      - DB_USER=${PG1_USER}
+      - DB_PASSWORD=${PG1_PASS}
+      - DB_SEARCH_PATH=public,timetable
+      - CACHE_ENABLED="true"
+      - CACHE_STORE=redis"
+      - CACHE_REDIS"redis://cache:6379"
+    volumes:
+      - ./api/extensions:/directus/extensions
+      - ./api/uploads:/directus/uploads
+      - ./results:/results
+    networks:
+      - db
+      - proxy
+      - internal
+
+  cache:
+    container_name: cache
+    image: redis:7
+    restart: always
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+    networks:
+      - db
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d", "${PG1_DB}" ]
+      timeout: 1s
+      retries: 5
+      interval: 1s
+    ports:
+      - 5432:5432
+    command: ["postgres", "-c", "log_statement=none", "-c", "log_checkpoints=off"]
+    environment:
+      POSTGRES_DB: ${PG1_DB}
+      POSTGRES_USER: ${PG1_USER}
+      POSTGRES_PASSWORD: ${PG1_PASS}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backup:/backup
+    networks:
+      - db
+
+  scan_tls:
+    # image: ciso360ai/scan_tls:latest
+    build:
+      context: ./scan_tls/.
+    container_name: scan_tls
+    hostname: scan_tls
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8008/readiness || exit 1"]
+      timeout: 1s
+      interval: 1s
+      retries: 5
+    environment:
+      POSTGRES_HOST: ${PG1_HOST}
+      POSTGRES_PORT: ${PG1_PORT}
+      POSTGRES_DB: ${PG1_DB}
+      POSTGRES_USER: ${PG1_USER}
+      POSTGRES_PASSWORD: ${PG1_PASS}
+      SERVER_NAME: ${SERVER_NAME}
+    # command: ["--cron-workers=4"]
+    volumes:
+      - ./results:/results
+      - ./logs:/logs
+      - ./scan_tls/scripts/scan_tls:/usr/local/bin/scan_tls
+      - ./scan_tls/scripts/import_scan:/usr/local/bin/import_scan
+    networks:
+      - internal
+      - db
+
+  scan_domain:
+    # image: ciso360ai/scan_domain:latest
+    build:
+      context: ./scan_domain/.
+    container_name: scan_domain
+    hostname: scan_domain
+    restart: always
+    depends_on:
+      scan_tls:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8008/readiness || exit 1"]
+      timeout: 1s
+      interval: 1s
+      retries: 5
+    environment:
+      POSTGRES_HOST: ${PG1_HOST}
+      POSTGRES_PORT: ${PG1_PORT}
+      POSTGRES_DB: ${PG1_DB}
+      POSTGRES_USER: ${PG1_USER}
+      POSTGRES_PASSWORD: ${PG1_PASS}
+      SERVER_NAME: ${SERVER_NAME}
+    # command: ["--cron-workers=4"]
+    volumes:
+      - ./results:/results
+      - ./logs:/logs
+      - ./scan_domain/scripts/scan_domain:/usr/local/bin/scan_domain
+      - ./scan_domain/scripts/import_scan:/usr/local/bin/import_scan
+      - ./scan_domain/config:/scan_domain/config
+    networks:
+      - internal
+      - db
+
+networks:
+  proxy:
+  db:
+  internal:
+
+volumes:
+  postgres_data:
+    driver: local

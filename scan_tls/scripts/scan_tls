@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# scan [target]
+
+scan(){
+    echo -e "\nCISO360AI scan"
+    target="$1"
+
+    mkdir -p /results/$target
+    cd /results/$target
+
+    echo -e "\nTestSSL scan"
+    testssl -oJ /results/$target/testssl.json --overwrite $target
+
+    import_scan $target
+
+    cd /results
+    echo -e "\nEnumStop"
+}
+
+scan $1 >> /proc/1/fd/1

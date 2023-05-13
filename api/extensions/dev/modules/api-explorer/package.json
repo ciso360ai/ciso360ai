@@ -1,0 +1,26 @@
+{
+	"name": "directus-extension-api-explorer",
+	"version": "1.0.0",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-custom-module"
+	],
+	"directus:extension": {
+		"type": "module",
+		"path": "dist/index.js",
+		"source": "src/index.js",
+		"host": "^9.22.4"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "9.22.4",
+		"vue": "^3.2.39"
+	},
+	"dependencies": {
+		"rapidoc": "^9.3.3"
+	}
+}
