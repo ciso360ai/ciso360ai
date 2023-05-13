@@ -20,7 +20,7 @@ RUN mkdir out && \
     ; done
 
 # FROM node:16-alpine
-FROM ciso360ai/directus-mod:9.22.4-mod
+FROM ciso360ai/directus-mod:10.1.0-mod
 
 WORKDIR /directus
 USER root
