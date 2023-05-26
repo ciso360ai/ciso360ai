@@ -1,5 +1,5 @@
 # Base image
-FROM ubuntu:22.04
+FROM ubuntu:kinetic
 
 # Environment Variables
 ENV DEBIAN_FRONTEND="noninteractive"
