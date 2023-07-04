@@ -1,5 +1,5 @@
 # Base image
-FROM ubuntu:22.04
+FROM ubuntu:22.10
 
 # Environment Variables
 ENV DEBIAN_FRONTEND="noninteractive"
