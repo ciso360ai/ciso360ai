@@ -16,6 +16,6 @@
 		"build": "directus-extension build"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "10.1.0"
+		"@directus/extensions-sdk": "10.1.9"
 	}
 }
