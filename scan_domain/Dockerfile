@@ -6,8 +6,8 @@ ENV DEBIAN_FRONTEND="noninteractive"
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV TLDEXTRACT_CACHE="/root/tldextract.cache"
-ENV pg_timetable_ver="5.2.0"
-ENV go_ver="1.19.5"
+ENV pg_timetable_ver="5.5.0"
+ENV go_ver="1.20.7"
 
 ARG TARGETARCH
 ARG TARGETPLATFORM
