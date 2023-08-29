@@ -9,7 +9,7 @@
  * Risk management: risk assessment and mitigation tracking. WIP: AI assisted prioritisation and prediction
  * Collaboration: Escalation, sharing, alerting, third-party vendor assessments
 
-![CISO360AI in action](./img/ciso360ai_slide.gif)
+![CISO360AI in action](./api/uploads/ciso360ai_slide.gif)
 
 Note: not all features are open-sourced yet
 
@@ -133,6 +133,35 @@ http://localhost/admin/login
 or
 http://localhost:8055
 ```
+
+## Usage
+Add a new domain in the UI
+
+You should see some activity in the docker logs:
+```
+scan_domain  | 
+scan_domain  | CISO360AI scan
+scan_domain  | 
+scan_domain  | 
+scan_domain  | whois scan
+```
+
+Check results after some time in the UI, e.g. discovered subdomain hosts
+You may need to change the filters to "Show all items" since assets are added as inactive since the scan is passive
+
+Change the status to active for any inactive host (or add a new active host or IP) to do a TLS scan
+
+You should see some activity in the docker logs:
+```
+scan_tls     | 
+scan_tls     | CISO360AI scan
+scan_tls     | 
+scan_tls     | 
+scan_tls     | TestSSL scan
+scan_tls     | 
+```
+
+More relevant modules are available privately, give us a shout if interested in the paid supported version!
 
 ## Clean-up
 Every time you need to test the end-to-end app:
