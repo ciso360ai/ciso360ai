@@ -1,5 +1,5 @@
 version: 1
-directus: 10.1.0
+directus: 13.1.1
 vendor: postgres
 collections:
   - collection: actions
@@ -17,6 +17,7 @@ collections:
       icon: add_task
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 9
       sort_field: sort
@@ -39,6 +40,7 @@ collections:
       icon: import_export
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 21
       sort_field: null
@@ -61,6 +63,7 @@ collections:
       icon: null
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 22
       sort_field: null
@@ -83,6 +86,7 @@ collections:
       icon: null
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 23
       sort_field: null
@@ -105,6 +109,7 @@ collections:
       icon: null
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 24
       sort_field: null
@@ -127,6 +132,7 @@ collections:
       icon: privacy_tip
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 10
       sort_field: null
@@ -149,6 +155,7 @@ collections:
       icon: import_export
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 19
       sort_field: null
@@ -171,6 +178,7 @@ collections:
       icon: devices
       item_duplication_fields: []
       note: null
+      preview_url: null
       singleton: false
       sort: 6
       sort_field: null
@@ -193,6 +201,7 @@ collections:
       icon: castle
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 1
       sort_field: null
@@ -215,6 +224,7 @@ collections:
       icon: null
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 25
       sort_field: null
@@ -237,6 +247,7 @@ collections:
       icon: privacy_tip
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 11
       sort_field: null
@@ -259,6 +270,7 @@ collections:
       icon: null
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 2
       sort_field: null
@@ -281,6 +293,7 @@ collections:
       icon: null
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 15
       sort_field: null
@@ -303,6 +316,7 @@ collections:
       icon: null
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 16
       sort_field: null
@@ -325,6 +339,7 @@ collections:
       icon: null
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 3
       sort_field: null
@@ -347,6 +362,7 @@ collections:
       icon: null
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 26
       sort_field: null
@@ -373,6 +389,7 @@ collections:
       icon: account_balance
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 13
       sort_field: null
@@ -395,6 +412,7 @@ collections:
       icon: null
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 18
       sort_field: null
@@ -417,6 +435,7 @@ collections:
       icon: null
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 27
       sort_field: null
@@ -439,6 +458,7 @@ collections:
       icon: null
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 4
       sort_field: null
@@ -461,6 +481,7 @@ collections:
       icon: report_problem
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 8
       sort_field: sort
@@ -483,6 +504,7 @@ collections:
       icon: import_export
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 28
       sort_field: null
@@ -505,6 +527,7 @@ collections:
       icon: import_export
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 29
       sort_field: null
@@ -527,6 +550,7 @@ collections:
       icon: import_export
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 30
       sort_field: null
@@ -549,6 +573,7 @@ collections:
       icon: cached
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 14
       sort_field: null
@@ -571,6 +596,7 @@ collections:
       icon: null
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 17
       sort_field: null
@@ -593,6 +619,7 @@ collections:
       icon: null
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 31
       sort_field: null
@@ -615,6 +642,7 @@ collections:
       icon: null
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 5
       sort_field: null
@@ -637,6 +665,7 @@ collections:
       icon: admin_panel_settings
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 12
       sort_field: sort
@@ -659,6 +688,7 @@ collections:
       icon: import_export
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 20
       sort_field: null
@@ -681,6 +711,7 @@ collections:
       icon: bug_report
       item_duplication_fields: null
       note: null
+      preview_url: null
       singleton: false
       sort: 7
       sort_field: null
