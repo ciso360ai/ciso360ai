@@ -10,14 +10,14 @@
 		"type": "module",
 		"path": "dist/index.js",
 		"source": "src/index.js",
-		"host": "^9.22.4"
+		"host": "^10.6.3"
 	},
 	"scripts": {
 		"build": "directus-extension build",
 		"dev": "directus-extension build -w --no-minify"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "10.1.0",
+		"@directus/extensions-sdk": "10.1.11",
 		"vue": "^3.2.39"
 	},
 	"dependencies": {
