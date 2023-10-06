@@ -163,6 +163,29 @@ collections:
       unarchive_value: null
     schema:
       name: compliance_frameworks
+  - collection: controls
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: status
+      archive_value: archived
+      collapse: open
+      collection: controls
+      color: '#3399FF'
+      display_template: '{{class}} - {{control}}'
+      group: null
+      hidden: false
+      icon: construction
+      item_duplication_fields: null
+      note: null
+      preview_url: null
+      singleton: false
+      sort: 11
+      sort_field: null
+      translations: null
+      unarchive_value: draft
+    schema:
+      name: controls
   - collection: devices
     meta:
       accountability: all
@@ -512,6 +535,29 @@ collections:
       unarchive_value: null
     schema:
       name: risks_actions
+  - collection: risks_controls
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: null
+      archive_value: null
+      collapse: open
+      collection: risks_controls
+      color: null
+      display_template: null
+      group: null
+      hidden: true
+      icon: import_export
+      item_duplication_fields: null
+      note: null
+      preview_url: null
+      singleton: false
+      sort: 33
+      sort_field: null
+      translations: null
+      unarchive_value: null
+    schema:
+      name: risks_controls
   - collection: risks_directus_users
     meta:
       accountability: all
@@ -2420,6 +2466,439 @@ fields:
       has_auto_increment: true
       foreign_key_table: null
       foreign_key_column: null
+  - collection: controls
+    field: class
+    type: string
+    meta:
+      collection: controls
+      conditions: null
+      display: null
+      display_options: null
+      field: class
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - text: administrative
+            value: administrative
+          - text: physical
+            value: physical
+          - text: technical
+            value: technical
+          - text: operational
+            value: operational
+      readonly: false
+      required: false
+      sort: 3
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: class
+      table: controls
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: controls
+    field: control
+    type: string
+    meta:
+      collection: controls
+      conditions: null
+      display: null
+      display_options: null
+      field: control
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        placeholder: short name of the control
+      readonly: false
+      required: false
+      sort: 2
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: control
+      table: controls
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: controls
+    field: date_created
+    type: timestamp
+    meta:
+      collection: controls
+      conditions: null
+      display: datetime
+      display_options:
+        relative: true
+      field: date_created
+      group: null
+      hidden: true
+      interface: datetime
+      note: null
+      options: null
+      readonly: true
+      required: false
+      sort: 8
+      special:
+        - date-created
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: date_created
+      table: controls
+      data_type: timestamp with time zone
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: controls
+    field: date_updated
+    type: timestamp
+    meta:
+      collection: controls
+      conditions: null
+      display: datetime
+      display_options:
+        relative: true
+      field: date_updated
+      group: null
+      hidden: true
+      interface: datetime
+      note: null
+      options: null
+      readonly: true
+      required: false
+      sort: 10
+      special:
+        - date-updated
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: date_updated
+      table: controls
+      data_type: timestamp with time zone
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: controls
+    field: id
+    type: uuid
+    meta:
+      collection: controls
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: true
+      interface: input
+      note: null
+      options: null
+      readonly: true
+      required: false
+      sort: 1
+      special:
+        - uuid
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: id
+      table: controls
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: false
+      is_unique: true
+      is_primary_key: true
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: controls
+    field: reference
+    type: string
+    meta:
+      collection: controls
+      conditions: null
+      display: null
+      display_options: null
+      field: reference
+      group: null
+      hidden: false
+      interface: input
+      note: null
+      options:
+        placeholder: external reference, e.g. link to internal policy
+      readonly: false
+      required: false
+      sort: 6
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: reference
+      table: controls
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: controls
+    field: status
+    type: string
+    meta:
+      collection: controls
+      conditions: null
+      display: labels
+      display_options:
+        choices:
+          - text: not implemented
+            value: not implemented
+            foreground: '#FFFFFF'
+            background: '#E35169'
+          - text: planned
+            value: planned
+            foreground: '#FFFFFF'
+            background: '#3399FF'
+          - text: partial implemented
+            value: partial implemented
+            foreground: '#18222F'
+            background: '#FFC23B'
+          - text: fully implemented
+            value: fully implemented
+            foreground: '#FFFFFF'
+            background: '#2ECDA7'
+      field: status
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - text: not implemented
+            value: not implemented
+          - text: planned
+            value: planned
+          - text: partial implemented
+            value: partial implemented
+          - text: fully implemented
+            value: fully implemented
+      readonly: false
+      required: false
+      sort: 5
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: status
+      table: controls
+      data_type: character varying
+      default_value: not implemented
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: controls
+    field: type
+    type: string
+    meta:
+      collection: controls
+      conditions: null
+      display: null
+      display_options: null
+      field: type
+      group: null
+      hidden: false
+      interface: select-dropdown
+      note: null
+      options:
+        choices:
+          - text: preventative
+            value: preventative
+          - text: detective
+            value: detective
+          - text: corrective
+            value: corrective
+      readonly: false
+      required: false
+      sort: 4
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: type
+      table: controls
+      data_type: character varying
+      default_value: null
+      max_length: 255
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: controls
+    field: user_created
+    type: uuid
+    meta:
+      collection: controls
+      conditions: null
+      display: user
+      display_options: null
+      field: user_created
+      group: null
+      hidden: true
+      interface: select-dropdown-m2o
+      note: null
+      options:
+        template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
+      readonly: true
+      required: false
+      sort: 7
+      special:
+        - user-created
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: user_created
+      table: controls
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: directus_users
+      foreign_key_column: id
+  - collection: controls
+    field: user_updated
+    type: uuid
+    meta:
+      collection: controls
+      conditions: null
+      display: user
+      display_options: null
+      field: user_updated
+      group: null
+      hidden: true
+      interface: select-dropdown-m2o
+      note: null
+      options:
+        template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
+      readonly: true
+      required: false
+      sort: 9
+      special:
+        - user-updated
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: user_updated
+      table: controls
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: directus_users
+      foreign_key_column: id
   - collection: devices
     field: comments
     type: text
@@ -6742,7 +7221,7 @@ fields:
         limit: 5
       readonly: false
       required: false
-      sort: 10
+      sort: 11
       special:
         - m2m
       translations: null
@@ -6773,6 +7252,33 @@ fields:
       validation_message: null
       width: half
   - collection: risks
+    field: controls
+    type: alias
+    meta:
+      collection: risks
+      conditions: null
+      display: related-values
+      display_options:
+        template: '{{controls_id.class}}: {{controls_id.control}}'
+      field: controls
+      group: null
+      hidden: false
+      interface: list-m2m
+      note: null
+      options:
+        enableLink: true
+        limit: 5
+        template: '{{controls_id.class}}: {{controls_id.control}}'
+      readonly: false
+      required: false
+      sort: 10
+      special:
+        - m2m
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+  - collection: risks
     field: date_created
     type: timestamp
     meta:
@@ -6789,7 +7295,7 @@ fields:
       options: null
       readonly: true
       required: false
-      sort: 14
+      sort: 15
       special:
         - date-created
       translations: null
@@ -6828,7 +7334,7 @@ fields:
       options: null
       readonly: false
       required: false
-      sort: 11
+      sort: 12
       special: null
       translations: null
       validation: null
@@ -6867,7 +7373,7 @@ fields:
       options: null
       readonly: true
       required: false
-      sort: 16
+      sort: 17
       special:
         - date-updated
       translations: null
@@ -7291,7 +7797,7 @@ fields:
       options: null
       readonly: false
       required: false
-      sort: 12
+      sort: 13
       special: null
       translations: null
       validation: null
@@ -7400,7 +7906,7 @@ fields:
         template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
       readonly: true
       required: false
-      sort: 13
+      sort: 14
       special:
         - user-created
       translations: null
@@ -7440,7 +7946,7 @@ fields:
         template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
       readonly: true
       required: false
-      sort: 15
+      sort: 16
       special:
         - user-updated
       translations: null
@@ -7564,6 +8070,120 @@ fields:
     schema:
       name: risks_id
       table: risks_actions
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: risks
+      foreign_key_column: id
+  - collection: risks_controls
+    field: controls_id
+    type: uuid
+    meta:
+      collection: risks_controls
+      conditions: null
+      display: null
+      display_options: null
+      field: controls_id
+      group: null
+      hidden: true
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: controls_id
+      table: risks_controls
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: controls
+      foreign_key_column: id
+  - collection: risks_controls
+    field: id
+    type: integer
+    meta:
+      collection: risks_controls
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: true
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: id
+      table: risks_controls
+      data_type: integer
+      default_value: nextval('risks_controls_id_seq'::regclass)
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: false
+      is_unique: true
+      is_primary_key: true
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: true
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: risks_controls
+    field: risks_id
+    type: uuid
+    meta:
+      collection: risks_controls
+      conditions: null
+      display: null
+      display_options: null
+      field: risks_id
+      group: null
+      hidden: true
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: risks_id
+      table: risks_controls
       data_type: uuid
       default_value: null
       max_length: null
@@ -10467,6 +11087,48 @@ relations:
       constraint_name: compliance_frameworks_frameworks_id_foreign
       on_update: NO ACTION
       on_delete: NO ACTION
+  - collection: controls
+    field: user_created
+    related_collection: directus_users
+    meta:
+      junction_field: null
+      many_collection: controls
+      many_field: user_created
+      one_allowed_collections: null
+      one_collection: directus_users
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: controls
+      column: user_created
+      foreign_key_table: directus_users
+      foreign_key_column: id
+      constraint_name: controls_user_created_foreign
+      on_update: NO ACTION
+      on_delete: NO ACTION
+  - collection: controls
+    field: user_updated
+    related_collection: directus_users
+    meta:
+      junction_field: null
+      many_collection: controls
+      many_field: user_updated
+      one_allowed_collections: null
+      one_collection: directus_users
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: controls
+      column: user_updated
+      foreign_key_table: directus_users
+      foreign_key_column: id
+      constraint_name: controls_user_updated_foreign
+      on_update: NO ACTION
+      on_delete: NO ACTION
   - collection: devices
     field: user_created
     related_collection: directus_users
@@ -11086,6 +11748,48 @@ relations:
       foreign_key_table: risks
       foreign_key_column: id
       constraint_name: risks_actions_risks_id_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: risks_controls
+    field: controls_id
+    related_collection: controls
+    meta:
+      junction_field: risks_id
+      many_collection: risks_controls
+      many_field: controls_id
+      one_allowed_collections: null
+      one_collection: controls
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: risks_controls
+      column: controls_id
+      foreign_key_table: controls
+      foreign_key_column: id
+      constraint_name: risks_controls_controls_id_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: risks_controls
+    field: risks_id
+    related_collection: risks
+    meta:
+      junction_field: controls_id
+      many_collection: risks_controls
+      many_field: risks_id
+      one_allowed_collections: null
+      one_collection: risks
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: controls
+      sort_field: null
+    schema:
+      table: risks_controls
+      column: risks_id
+      foreign_key_table: risks
+      foreign_key_column: id
+      constraint_name: risks_controls_risks_id_foreign
       on_update: NO ACTION
       on_delete: SET NULL
   - collection: risks_directus_users
