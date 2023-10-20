@@ -1,5 +1,5 @@
 # See: https://github.com/paescuj/jaa/blob/main/directus/Dockerfile
-FROM node:18-alpine AS build
+FROM node:21-alpine AS build
 
 WORKDIR /home/app
 COPY extensions/dev dev
