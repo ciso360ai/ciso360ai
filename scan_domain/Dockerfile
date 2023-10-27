@@ -57,7 +57,6 @@ RUN \
     && tar -xvf pg_timetable_${pg_timetable_ver}_Linux_arm64.tar.gz \
     && mv pg_timetable_${pg_timetable_ver}_Linux_arm64/pg_timetable /usr/bin \
     && rm -rf pg_timetable_${pg_timetable_ver}_Linux_arm64* \
-#go1.17 is needed by nuclei, do not upgrade to latest Ubuntu!
     && wget https://go.dev/dl/go${go_ver}.linux-arm64.tar.gz \
     && rm -rf /usr/local/go \
     && tar -C /usr/local -xzf go${go_ver}.linux-arm64.tar.gz \
