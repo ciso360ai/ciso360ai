@@ -8,3 +8,4 @@ api/extensions/snapshots/*-snapshot-*.yaml
 api/uploads/*
 !api/uploads/ciso360ai_slide.gif
 logs/*.log
+efs
