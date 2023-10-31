@@ -20,7 +20,7 @@ RUN mkdir out && \
     ; done
 
 # FROM node:16-alpine
-FROM ciso360ai/directus-mod:latest
+FROM directus/directus:10.7.1
 
 WORKDIR /directus
 USER root
@@ -42,7 +42,7 @@ COPY --from=build /home/app/out /tmp/available
 
 # Currently required, check if needed in future release
 RUN corepack enable \
-  && corepack prepare pnpm@8.1.1 --activate \
+  && corepack prepare pnpm@8.7.4 --activate \
   && chown node:node /directus
 
 RUN pnpm install --prefer-offline        

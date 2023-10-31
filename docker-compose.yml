@@ -17,6 +17,9 @@ services:
       - PROXY=1
       - BACKEND=http://api:8055
       - SERVER_NAME=${SERVER_NAME}
+      - SERVER_TOKENS=Full
+      - MODSEC_SERVER_SIGNATURE=CISO360AI
+      - MODSEC_RULE_ENGINE=On # Off, DetectionOnly
       - ALLOWED_METHODS=GET POST PUT OPTIONS PATCH DELETE
       - ACCESSLOG=/var/log/apache2/access.log
       - ERRORLOG=/var/log/apache2/error.log
@@ -73,7 +76,7 @@ services:
 
   cache:
     container_name: cache
-    image: redis:7
+    image: redis:7-alpine
     restart: always
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
@@ -81,7 +84,7 @@ services:
       - db
 
   postgres:
-    image: postgres:15
+    image: postgres:16-alpine
     container_name: postgres
     restart: always
     healthcheck:

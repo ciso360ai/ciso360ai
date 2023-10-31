@@ -1,8 +1,8 @@
-ARG APACHE_VERSION=2.4
+ARG APACHE_VERSION=2.4.57
 
 FROM httpd:${APACHE_VERSION}-alpine as build
 
-ARG MODSEC_VERSION=2.9.6
+ARG MODSEC_VERSION=2.9.7
 
 # see https://httpd.apache.org/docs/2.4/install.html#requirements
 RUN set -eux; \
@@ -45,27 +45,20 @@ RUN set -eux; \
     make install; \
     make clean
 
-# Generate self-signed certificates (if needed)
-RUN mkdir -p /usr/share/TLS
-COPY apache/openssl.conf /usr/share/TLS
-RUN openssl req -x509 -days 365 -new \
-    -config /usr/share/TLS/openssl.conf \
-    -keyout /usr/share/TLS/server.key \
-    -out /usr/share/TLS/server.crt
-
 FROM httpd:${APACHE_VERSION}-alpine as crs_release
 
-ARG CRS_RELEASE=3.3.4
+ARG CRS_RELEASE=3.3.5
 
 # hadolint ignore=DL3008,SC2016
 RUN set -eux; \
     apk add --no-cache \
         ca-certificates \
         curl \
+        curl-dev \
         gnupg; \
     mkdir /opt/owasp-crs; \
-    curl -SL https://github.com/coreruleset/coreruleset/archive/v${CRS_RELEASE}.tar.gz -o v${CRS_RELEASE}.tar.gz; \
-    curl -SL https://github.com/coreruleset/coreruleset/releases/download/v${CRS_RELEASE}/coreruleset-${CRS_RELEASE}.tar.gz.asc -o coreruleset-${CRS_RELEASE}.tar.gz.asc; \
+    curl -sSL https://github.com/coreruleset/coreruleset/archive/v${CRS_RELEASE}.tar.gz -o v${CRS_RELEASE}.tar.gz; \
+    curl -sSL https://github.com/coreruleset/coreruleset/releases/download/v${CRS_RELEASE}/coreruleset-${CRS_RELEASE}.tar.gz.asc -o coreruleset-${CRS_RELEASE}.tar.gz.asc; \
     gpg --fetch-key https://coreruleset.org/security.asc; \
     gpg --verify coreruleset-${CRS_RELEASE}.tar.gz.asc v${CRS_RELEASE}.tar.gz; \
     tar -zxf v${CRS_RELEASE}.tar.gz --strip-components=1 -C /opt/owasp-crs; \
@@ -74,12 +67,13 @@ RUN set -eux; \
 
 FROM httpd:${APACHE_VERSION}-alpine
 
-ARG MODSEC_VERSION=2.9.6
+ARG MODSEC_VERSION=2.9.7
 
 LABEL maintainer="Felipe Zipitria <felipe.zipitria@owasp.org>"
 
 ENV APACHE_ALWAYS_TLS_REDIRECT=off \
     APACHE_LOGFORMAT='"%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\""' \
+    APACHE_ERRORLOG_FORMAT='"[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M% ,\ referer\ %{Referer}i"' \
     APACHE_METRICS_LOGFORMAT='"%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\""' \
     ACCESSLOG=/var/log/apache2/access.log \
     BACKEND=http://localhost:80 \
@@ -89,6 +83,7 @@ ENV APACHE_ALWAYS_TLS_REDIRECT=off \
     LOGLEVEL=warn \
     METRICS_ALLOW_FROM='127.0.0.0/255.0.0.0 ::1/128' \
     METRICS_DENY_FROM='All' \
+    MUTEX='default' \
     METRICSLOG='/dev/null' \
     MODSEC_AUDIT_ENGINE="RelevantOnly" \
     MODSEC_AUDIT_LOG_FORMAT=JSON \
@@ -156,14 +151,11 @@ ENV APACHE_ALWAYS_TLS_REDIRECT=off \
 COPY --from=build /usr/local/apache2/modules/mod_security2.so                  /usr/local/apache2/modules/mod_security2.so
 COPY --from=build /usr/local/apache2/ModSecurity-${MODSEC_VERSION}/modsecurity.conf-recommended  /etc/modsecurity.d/modsecurity.conf
 COPY --from=build /usr/local/apache2/ModSecurity-${MODSEC_VERSION}/unicode.mapping               /etc/modsecurity.d/unicode.mapping
-COPY --from=build /usr/share/TLS/server.key                                    /usr/local/apache2/conf/server.key
-COPY --from=build /usr/share/TLS/server.crt                                    /usr/local/apache2/conf/server.crt
 COPY --from=crs_release /opt/owasp-crs /opt/owasp-crs
-
+COPY bin/* /usr/local/bin/
 COPY modsecurity/activate-*.sh /opt/modsecurity/
 COPY modsecurity/*.conf /etc/modsecurity.d/
 COPY apache/*.conf /usr/local/apache2/conf/extra/
-COPY healthcheck /usr/local/bin/healthcheck
 COPY docker-entrypoint.sh /
 
 RUN set -eux; \
@@ -175,6 +167,7 @@ RUN set -eux; \
         libfuzzy2 \
         libxml2 \
         moreutils \
+        openssl \
         sed \
         tzdata \
         yajl; \
