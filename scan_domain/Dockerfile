@@ -1,5 +1,10 @@
 FROM ghcr.io/ciso360ai/scan_image:latest
 
+LABEL \
+    name="CISO360AI" \
+    author="CISO360AI <office@CISO360.AI>" \
+    description="Your All-round Cyber-Intelligent Sidekick"
+
 # Environment Variables
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV PYTHONDONTWRITEBYTECODE 1
