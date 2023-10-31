@@ -84,7 +84,7 @@ BEGIN
                     VALUES (v_task_id, 1, jsonb_build_array(NEW.hostname));
                 RETURN NEW;
             ELSIF NEW.status = 'inactive' THEN
-                DELETE FROM timetable.task WHERE task_name = NEW.hostname RETURNING task_id INTO v_task_id;
+                DELETE FROM timetable.task WHERE command = 'scan_tls' AND task_name = NEW.hostname RETURNING task_id INTO v_task_id;
                 DELETE FROM timetable.parameter WHERE task_id = v_task_id;
                 RETURN OLD;
             END IF;
