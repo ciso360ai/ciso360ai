@@ -16,9 +16,6 @@ ENV PATH="${PATH}:${GOROOT}/bin:${GOPATH}/bin"
 # Make directory for app
 WORKDIR /tools
 
-# Download Go packages
-RUN GOARCH=${TARGETARCH} go install github.com/tomnomnom/anew@latest
-
 #Install TestSSL
 RUN git clone --depth 1 https://github.com/drwetter/testssl.sh.git /tools/testssl.sh \
     && ln -s /tools/testssl.sh/testssl.sh /usr/local/bin/testssl
