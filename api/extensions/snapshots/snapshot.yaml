@@ -1911,6 +1911,26 @@ fields:
       foreign_key_table: null
       foreign_key_column: null
   - collection: chain
+    field: on_error
+    type: text
+    meta: null
+    schema:
+      name: on_error
+      table: chain
+      data_type: text
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: chain
     field: run_at
     type: unknown
     meta:
@@ -5009,7 +5029,7 @@ fields:
       foreign_key_column: null
   - collection: execution_log
     field: txid
-    type: integer
+    type: bigInteger
     meta:
       collection: execution_log
       conditions: null
@@ -5032,10 +5052,10 @@ fields:
     schema:
       name: txid
       table: execution_log
-      data_type: integer
+      data_type: bigint
       default_value: 0
       max_length: null
-      numeric_precision: 32
+      numeric_precision: 64
       numeric_scale: 0
       is_nullable: true
       is_unique: false
