@@ -17,6 +17,7 @@ ARG TARGETPLATFORM
 ENV GOROOT="/usr/local/go"
 ENV GOPATH=$HOME/go
 ENV PATH="${PATH}:${GOROOT}/bin:${GOPATH}/bin"
+ENV PGTT_RESTPORT 8008
 
 # Make directory for app
 WORKDIR /tools
@@ -31,8 +32,6 @@ RUN chmod +x /usr/local/bin/* \
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-
-ENV PGTT_RESTPORT 8008
 
 WORKDIR /results
 ENTRYPOINT ["/entrypoint.sh"]

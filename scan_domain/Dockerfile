@@ -10,6 +10,7 @@ ENV DEBIAN_FRONTEND="noninteractive"
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV TLDEXTRACT_CACHE="/root/tldextract.cache"
+ENV PGTT_RESTPORT 8008
 
 ARG TARGETARCH
 ARG TARGETPLATFORM
@@ -34,8 +35,6 @@ RUN chmod +x /usr/local/bin/* \
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-
-ENV PGTT_RESTPORT 8008
 
 WORKDIR /results
 ENTRYPOINT ["/entrypoint.sh"]
