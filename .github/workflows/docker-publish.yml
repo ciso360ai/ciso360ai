@@ -16,6 +16,8 @@ on:
     paths:
       - 'api/**'
       - 'rproxy/**'
+      - 'scan_domain/**'
+      - 'scan_tls/**'
   # pull_request:
   #   branches: [ "main" ]
 
@@ -39,6 +41,12 @@ jobs:
           - image: ghcr.io/ciso360ai/rproxy
             dockerfile: rproxy/Dockerfile
             context: rproxy/.
+          - image: ghcr.io/ciso360ai/scan_domain
+            dockerfile: scan_domain/Dockerfile
+            context: scan_domain/.
+          - image: ghcr.io/ciso360ai/scan_tls
+            dockerfile: scan_tls/Dockerfile
+            context: scan_tls/.
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
