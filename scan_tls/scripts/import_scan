@@ -60,11 +60,12 @@ severity = 1
 
 details = ''
 details += '<table>'
-details += '<tr><th>Vuln</th><th>Severity</th></tr>'
+details += '<tr><th>Vuln</th><th>Severity</th><th>Finding</th></tr>'
 for finding in vulnerabilities:
     details += '<tr>'
     details += '<td>' + finding['id'] + '</td>'
     details += '<td>' + finding['severity'] + '</td>'
+    details += '<td>' + finding['finding'] + '</td>'
     # if 'cve' in finding:
     #     details += '<td>' + '<a href="https://nvd.nist.gov/vuln/detail/' + finding['cve'] + '">' + finding['cve'] + '</a>' + '</td>'
     # else:

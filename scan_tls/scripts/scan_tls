@@ -10,7 +10,7 @@ scan(){
     cd /results/$target
 
     echo -e "\nTestSSL scan"
-    testssl -oJ /results/$target/testssl.json --overwrite $target
+    testssl --ip one --ids-friendly -oJ /results/$target/testssl.json --overwrite $target
 
     import_scan $target
 
