@@ -99,7 +99,7 @@ cd /opt/ciso360ai && cp example.env .env
 
 **NOTE: CHANGE DEFAULTS**
 
-## Build
+## Build - optional
 
 docker compose build
 
@@ -110,7 +110,7 @@ cd /opt/ciso360ai
 docker compose up -d
 ```
 
-This will build the local containers and start the app...
+This will pull or build the local containers and start the app...
 Wait until all containers are started:
 ```
 api INFO: Server started at http://0.0.0.0:8055

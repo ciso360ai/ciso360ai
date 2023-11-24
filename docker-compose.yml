@@ -3,7 +3,7 @@ version: "3"
 services:
 
   rproxy:
-    # image: ciso360ai/rproxy:latest
+    image: ghcr.io/ciso360ai/rproxy:latest
     build:
       context: ./rproxy/.
     container_name: rproxy
@@ -36,7 +36,7 @@ services:
       - proxy
 
   api:
-    # image: ciso360ai/api:latest
+    image: ghcr.io/ciso360ai/api:latest
     build:
       context: ./api/.
     container_name: api
@@ -106,7 +106,7 @@ services:
       - db
 
   scan_tls:
-    # image: ciso360ai/scan_tls:latest
+    image: ghcr.io/ciso360ai/scan_tls:latest
     build:
       context: ./scan_tls/.
     container_name: scan_tls
@@ -138,7 +138,7 @@ services:
       - db
 
   scan_domain:
-    # image: ciso360ai/scan_domain:latest
+    image: ghcr.io/ciso360ai/scan_domain:latest
     build:
       context: ./scan_domain/.
     container_name: scan_domain
