@@ -173,6 +173,13 @@ VALUES ('ac7977fc-616b-46fc-a03f-e2048abf45f9', 'Email', 'email', 'mail', 19, 1,
 
 EOF"
 
+docker exec -i postgres /bin/sh -c "psql -d \$POSTGRES_DB << EOF
+
+INSERT INTO ports (id, port) 
+VALUES (1, 0);
+
+EOF"
+
 $PWD/scripts/add_csf.sh
 $PWD/scripts/add_rating_calculation.sh
 $PWD/scripts/regular_jobs.sh
