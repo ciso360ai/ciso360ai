@@ -170,6 +170,39 @@ services:
       - internal
       - db
 
+  identity_assessment:
+    image: ghcr.io/ciso360ai/identity_assessment:latest
+    build:
+      context: ./identity_assessment/.
+    container_name: identity_assessment
+    hostname: identity_assessment
+    restart: always
+    depends_on:
+      scan_tls:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8008/readiness || exit 1"]
+      timeout: 1s
+      interval: 1s
+      retries: 5
+    environment:
+      POSTGRES_HOST: ${PG1_HOST}
+      POSTGRES_PORT: ${PG1_PORT}
+      POSTGRES_DB: ${PG1_DB}
+      POSTGRES_USER: ${PG1_USER}
+      POSTGRES_PASSWORD: ${PG1_PASS}
+      SERVER_NAME: ${SERVER_NAME}
+    # command: ["--cron-workers=4"]
+    volumes:
+      - ./results:/results
+      - ./logs:/logs
+      - ./identity_assessment/scripts/scan_domain:/usr/local/bin/scan_domain
+      - ./identity_assessment/scripts/import_scan:/usr/local/bin/import_scan
+      - ./identity_assessment/config:/scan_domain/config
+    networks:
+      - internal
+      - db
+
 networks:
   proxy:
   db:
