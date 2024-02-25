@@ -20,7 +20,7 @@ RUN mkdir out && \
     ; done
 
 # FROM node:16-alpine
-FROM directus/directus:10.8.3
+FROM directus/directus:10.9.3
 
 WORKDIR /directus
 USER root
