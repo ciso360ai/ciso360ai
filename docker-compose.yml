@@ -196,8 +196,8 @@ services:
     volumes:
       - ./results:/results
       - ./logs:/logs
-      - ./identity_assessment/scripts/scan_domain:/usr/local/bin/scan_domain
-      - ./identity_assessment/scripts/import_scan:/usr/local/bin/import_scan
+      - ./identity_assessment/scripts/test:/usr/local/bin/test
+      - ./identity_assessment/scripts/startup:/usr/local/bin/startup
       - ./identity_assessment/config:/scan_domain/config
     networks:
       - internal

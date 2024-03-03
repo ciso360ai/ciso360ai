@@ -1,3 +1,4 @@
 requests
 urllib3
 psycopg2-binary
+requests
