@@ -41,6 +41,6 @@ conn.close()
 
 
 #Check API
-response = requests.get("https://haveIbeenpwned.com/api/v3/subscription/status", headers={'hibp-api-key':''})
+response = requests.get("https://haveIbeenpwned.com/api/v3/subscription/status", headers={'hibp-api-key':os.environ['HIBP_API_KEY']})
 print("API Checked")
 print(response.json())

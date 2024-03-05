@@ -192,12 +192,14 @@ services:
       POSTGRES_USER: ${PG1_USER}
       POSTGRES_PASSWORD: ${PG1_PASS}
       SERVER_NAME: ${SERVER_NAME}
+      HIBP_API_KEY: ${HIBP_KEY}
     # command: ["--cron-workers=4"]
     volumes:
       - ./results:/results
       - ./logs:/logs
       - ./identity_assessment/scripts/test:/usr/local/bin/test
       - ./identity_assessment/scripts/startup:/usr/local/bin/startup
+      - ./identity_assessment/scripts/poc:/usr/local/bin/poc 
       - ./identity_assessment/config:/scan_domain/config
     networks:
       - internal

@@ -1,0 +1,99 @@
+#!/usr/bin/python3
+
+import sys
+import os
+import requests
+import json
+import psycopg2
+from urllib.parse import urlparse
+
+#Establishing the connection
+conn = psycopg2.connect(
+   host = os.environ['POSTGRES_HOST'],
+   database = os.environ['POSTGRES_DB'],
+   port = os.environ['POSTGRES_PORT'],
+   user = os.environ['POSTGRES_USER'],
+   password = os.environ['POSTGRES_PASSWORD']
+)
+conn.autocommit = True
+cursor = conn.cursor()
+
+#Fetch the list of domains from the domains table
+add_table = '''
+SELECT domain FROM domains
+;'''
+cursor.execute(add_table)
+results = cursor.fetchall()
+conn.close()
+report_domains = {}
+#For each of the domains
+for tuple in results:
+
+	domain = tuple[0] # selects the domain from the database tuple return
+	report_emails = {}
+
+
+	print("Checking the domain: " + domain)
+	URL = "https://haveIbeenpwned.com/api/v3/breacheddomain/" + domain
+	#response = requests.get(URL, headers={'hibp-api-key':os.environ['HIBP_API_KEY']}) #Disabled the api fetch while building to avoid overloading the API during testing
+	response = requests.Response()
+
+	dict_response = {} #dict response is a variable to hold the test data. Because it was loading as a list, and this works
+
+	#This if statment catches the api return of "hibp-integration-tests.com" and replaces it's response with breaches we can actually test instead of 403
+	if domain == "hibp-integration-tests.com":
+		response.status_code = 200
+		utf_string = '[{"not-active-and-active-breach": ["Adobe"],"multiple-breaches": ["Adobe","Gawker","Stratfor"], "spam-list-only":["OnlineSpambot"]}]'
+		bytes_string = utf_string.encode('utf-8')
+		response._content = bytes_string
+		dict_response = response.json()[0]
+
+	if response.status_code == 403:
+		print("Unable to search the domain @" + domain + "\nPlease organise permission for this key to access that domain at https://haveibeenpwned.com/DomainSearch")
+	elif response.status_code == 429:
+                print("********** Rate Limit Exceeded **********")
+                print(response.text)
+	elif response.status_code == 200:
+		print("Successful response")
+		#print(dict_response)
+		#print(type(dict_response))
+		print("")
+		print("(Email: \t\t\t\t No. Breaches)") #temp
+
+
+		#For each returned email, check against the database
+		needs_updating = []
+		for email in dict_response:
+
+			print("" + email + ": \t\t\t\t" + str(len(dict_response[email]))) #temp
+
+			####################
+			# Fetch number of email breaches
+			# If the number of breaches in the database is less than the above value
+			# Add the email to the needs updating list
+			# Note: If the email doesn't exist in the database, add it to be updated
+
+			needs_updating.append(email)
+
+
+		print("\nList of emails that need updating")
+		print(needs_updating) #temp
+
+		#For each email that needs updating, fetch a detailed list from the api and compare to the breaches table
+		for email in needs_updating:
+
+			report_breaches = []
+
+			#################
+			# API requests for the email account + @ + domain
+			# Get databases stored breaches for this email
+			# Compare api results to database
+			# Ignore records with the same name and date
+			# Add in records that don't exist yet
+			# Add new breaches to new_breaches list
+
+			report_emails[email] = report_breaches
+	report_domains[domain] = report_emails
+
+# After all the domains have been scanned Generate the report from report_domains
+# {Domain:{Email:[breaches]}}
