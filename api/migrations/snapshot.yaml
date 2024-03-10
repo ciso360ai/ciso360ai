@@ -1,5 +1,5 @@
 version: 1
-directus: 14.0.1
+directus: 10.10.2
 vendor: postgres
 collections:
   - collection: actions

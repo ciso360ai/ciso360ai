@@ -6,21 +6,21 @@ COPY extensions/dev dev
 
 RUN mkdir out && \
     cd dev && \
-    for dir_ext in */; do \
-        cd "$dir_ext" && \
-            for dir in */; do \
-                cd "$dir" && \
-                npm install && \
-                npm run build && \
-                mkdir -p ../../../out/$dir_ext$dir && \
-                mv dist ../../../out/$dir_ext$dir &&  \
-                cd .. \
-            ; done && \
+    # for dir_ext in */; do \
+    #     cd "$dir_ext" && \
+    for dir in */; do \
+        cd "$dir" && \
+        npm install && \
+        npm run build && \
+        mkdir -p ../../out/$dir && \
+        mv dist ../../out/$dir &&  \
         cd .. \
     ; done
+        # cd .. \
+    # ; done
 
 # FROM node:16-alpine
-FROM directus/directus:10.9.3
+FROM directus/directus:10.10.2
 
 WORKDIR /directus
 USER root
@@ -35,6 +35,7 @@ RUN apk upgrade --no-cache && \
 COPY package.json ./
 
 ADD ./extensions ./extensions/
+ADD ./migrations ./migrations/
 ADD ./uploads ./uploads/
 # ADD .env ./
 
@@ -42,7 +43,7 @@ COPY --from=build /home/app/out /tmp/available
 
 # Currently required, check if needed in future release
 RUN corepack enable \
-  && corepack prepare pnpm@8.7.4 --activate \
+  && corepack prepare pnpm@8.15.4 --activate \
   && chown node:node /directus
 
 RUN pnpm install --prefer-offline        
@@ -57,6 +58,6 @@ CMD npx directus bootstrap && \
     # npx directus users create --email "$ADMIN2_EMAIL" --password "$ADMIN2_PASSWORD" --role "$role" && \
     # echo "$(date +%T) ✨ Admin2 user created successfully" && \
 ## Restore snapshot and migrate to latest
-    npx directus schema apply /directus/extensions/snapshots/snapshot.yaml -y && \
+    npx directus schema apply /directus/migrations/snapshot.yaml -y && \
     npx directus database migrate:latest && \
     npx directus start

@@ -7,13 +7,14 @@ PGPASSWORD=XXX pg_dump -c -C -x --column-inserts --exclude-table-data '*.directu
 PGPASSWORD=XXX pg_dump -C -x -a --column-inserts --no-comments --username root ciso360ai > /backup/data-$(date '+%y%m%d_%H%M').sql && \
 PGPASSWORD=XXX pg_dump -C -x -a --column-inserts --exclude-table-data '*.directus*' --no-comments --username root ciso360ai > /backup/data_nodirectus-$(date '+%y%m%d_%H%M').sql
 PGPASSWORD=XXX pg_dumpall -U root > /backup/all.sql
+chmod 777 /backup/*.sql
 "
 
 #sudo chown ubuntu:ubuntu /backup/*.sql
 
-docker exec -i api /bin/sh -c "chown -R node:node /directus/extensions && npx directus schema snapshot --yes /directus/extensions/snapshots/\$(date +%F)\-snapshot-\$(date +%s)\.yaml"
+docker exec -i api /bin/sh -c "chown -R node:node /directus/migrations && npx directus schema snapshot --yes /directus/migrations/\$(date +%F)\-snapshot-\$(date +%s)\.yaml"
 
-#docker exec -i directus /bin/sh -c "npx directus schema apply --yes /directus/extensions/snapshots/snapshot.yaml"
+#docker exec -i directus /bin/sh -c "npx directus schema apply --yes /directus/migrations/snapshot.yaml"
 
 docker exec -i postgres /bin/bash -c "PGPASSWORD=XXX pg_dump --data-only --blobs --no-privileges --disable-triggers --inserts --on-conflict-do-nothing --quote-all-identifiers --no-comments \
   -t public.directus_roles \
@@ -45,4 +46,5 @@ docker exec -i postgres /bin/bash -c "PGPASSWORD=XXX pg_dump --data-only --blobs
   -t public.directus_activity \
   -t public.directus_folders \
   --username root ciso360ai > /backup/data_restore-$(date '+%y%m%d_%H%M').sql
+chmod 777 /backup/*.sql
 "

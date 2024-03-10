@@ -4,7 +4,8 @@ backup/*.sql
 results/*
 rproxy/logs
 rproxy/certs
-api/extensions/snapshots/*-snapshot-*.yaml
+api/migrations/*.yaml
+!api/migrations/snapshot.yaml
 api/uploads/*
 !api/uploads/ciso360ai_slide.gif
 logs/*.log

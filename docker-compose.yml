@@ -67,6 +67,7 @@ services:
       - CACHE_REDIS"redis://cache:6379"
     volumes:
       - ./api/extensions:/directus/extensions
+      - ./api/migrations:/directus/migrations
       - ./api/uploads:/directus/uploads
       - ./results:/results
     networks:

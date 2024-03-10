@@ -15,10 +15,12 @@
   "author": "CISO360AI",
   "license": "MIT",
   "dependencies": {
-    "directus": "10.9.3",
+    "directus": "10.10.2",
     "pg": "^8.10.0"
   },
+  "packageManager": "pnpm@8.15.4",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.18.0",
+    "pnpm": "~8.15"
   }
 }
