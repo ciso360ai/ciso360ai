@@ -41,8 +41,8 @@ add_table = '''
 CREATE TABLE IF NOT EXISTS email_breaches(
         id serial PRIMARY KEY,
         email_id integer REFERENCES emails(id) ON DELETE CASCADE,
-        breach_date date NOT NULL,
-        breach_location varchar(255) NOT NULL,
+	breach_date date NOT NULL,
+        breach_name varchar(255) NOT NULL,
         scan_date date NOT NULL
 );'''
 cursor.execute(add_table)
