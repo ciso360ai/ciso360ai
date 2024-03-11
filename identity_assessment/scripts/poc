@@ -29,16 +29,11 @@ def HIBP(url):
 			print("\tUnable to find {}".format(url))
 			return [False, response]
 		case 429:
-			try:
-				time_to_sleep = int(response.text.split(" ")[11]) + 1
+				time_to sleep = response.headers['Retry-After']
 				print("\t*** Waiting {} seconds ***".format(time_to_sleep))
 				time.sleep(time_to_sleep)
 				response = HIBP(url)
 				return response
-			except:
-				print(" ### Too many domain API calls ### ")
-				print(response.text)
-				return [False, response]
 		case 503:
 			print("\tHIBP API servise is unavailable")
 			return [False, response]
@@ -109,30 +104,27 @@ if new_breach_bool:
 
 		#######################
 		# Testing Data Setup
-		######################
-		response = [True, requests.Response()] # Create empty response
-		dict_response = {}
-		# This if statment catches the api return of "hibp-integration-tests.com"
+		#######################
+		# This if statment catches the api return of the domain "hibp-integration-tests.com"
 		# (Which returns as forbidden) and replaces it with a faked 'success' response
 		# This allows us to use the test data in the API and treat it as a pseudo domain
+		response = [True, requests.Response()] # Create empty response
+		dict_response = {}
 		if domain == "hibp-integration-tests.com":
 			response[1].status_code = 200
 			utf_string = '[{"not-active-and-active-breach": ["Adobe"],"multiple-breaches": ["Adobe","Gawker","Stratfor"], "spam-list-only":["OnlineSpambot"]}]'
 			bytes_string = utf_string.encode('utf-8')
 			response[1]._content = bytes_string
 			dict_response = response[1].json()[0]
-		else:
+		else: # Actually request a domain stan
 			URL = "https://haveIbeenpwned.com/api/v3/breacheddomain/" + domain
 			response = HIBP(URL)
 
-		# Failed the domain search
+		# Failed the domain search, check next domain.
 		if response[0] == False:
 			continue
 
 		needs_updating = [] # List for storing emails that need updating in each domain
-
-
-
 
 
 		#################
@@ -201,8 +193,6 @@ if new_breach_bool:
 
 			report_breaches = [] # List for storing newly added breaches for the final report
 
-			#################
-			# API requests for the email account + @ + domain
 			print("\nChecking the email: {}@{}".format(email, domain))
 			URL = "https://haveIbeenpwned.com/api/v3/breachedaccount/{}@{}/?truncateResponse=false".format(email, domain)
 			response = HIBP(URL)
@@ -238,7 +228,7 @@ if new_breach_bool:
 					cursor.execute(insert_new_breach)
 					report_breaches.append(breach['Name'])
 
-	# Add in the new breaches to the email and domain dicts
+	# Add in the new breaches to the email and domain dicts for the report
 			if len(report_breaches) > 0:
 				report_emails[email] = report_breaches
 		if len(report_emails) > 0:
