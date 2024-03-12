@@ -124,6 +124,7 @@ if new_breach_bool:
 		if response[0] == False:
 			continue
 
+		dict_response = response[1].json()
 		needs_updating = [] # List for storing emails that need updating in each domain
 
 
