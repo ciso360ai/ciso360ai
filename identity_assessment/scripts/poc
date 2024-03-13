@@ -1,0 +1,265 @@
+#!/usr/bin/python3
+# Author: Matthew Buckley
+# SQL Assisted by Sahim
+
+import sys
+import time
+from datetime import datetime
+import os
+import requests
+import json
+import psycopg2
+from urllib.parse import urlparse
+
+# A function to help handle the API when code 429 (Too many requests) is triggered
+def HIBP(url):
+	response = requests.get(url, headers={'hibp-api-key':os.environ['HIBP_API_KEY']})
+
+	match response.status_code:
+		case 400:
+			print("\tRequested with an empty string")
+			return [False, response]
+		case 401:
+			print("\tInvalid API key in .env ")
+			return [False, response]
+		case 403:
+			print("\tInvalid permissions for {}".format(url))
+			return [False, response]
+		case 404:
+			print("\tUnable to find {}".format(url))
+			return [False, response]
+		case 429:
+				time_to_sleep =int(response.headers['Retry-After'])
+				print("\t*** Waiting {} seconds ***".format(time_to_sleep))
+				time.sleep(time_to_sleep)
+				response = HIBP(url)
+				return response
+		case 503:
+			print("\tHIBP API servise is unavailable")
+			return [False, response]
+		case 200:
+			print("\t*** Successful response ***")
+			return [True, response]
+
+
+# Establishing the database connection
+conn = psycopg2.connect(
+   host = os.environ['POSTGRES_HOST'],
+   database = os.environ['POSTGRES_DB'],
+   port = os.environ['POSTGRES_PORT'],
+   user = os.environ['POSTGRES_USER'],
+   password = os.environ['POSTGRES_PASSWORD']
+)
+conn.autocommit = True
+cursor = conn.cursor()
+
+# Check for new data breaches by checking if the latest data breach is different from the localy stored one
+print("*** Checking for new breaches")
+URL = "https://haveIbeenpwned.com/api/v3/latestbreach"
+response = HIBP(URL)
+new_breach_bool = False
+
+if response[0] == True:
+	latest_breach = response[1].json()['Name']
+	file = open("stored_breach")
+	stored_breach = file.readline()
+	file.close()
+	if stored_breach != latest_breach: 
+		new_breach_bool = True
+		print("*** New Breach Discovered ***")
+else:
+	print("Failed to connect to HIBP")
+	print(response[1].text)
+	sys.exit(1)
+
+
+if new_breach_bool:
+
+	# Fetch the list of domains from the domains table
+	add_table = 	'''
+			SELECT (domain, id)
+			FROM domains
+			;'''
+	cursor.execute(add_table)
+	results = cursor.fetchall()
+
+	# Dictionary for generating the finalised report
+	report_domains = {}
+
+	for domain_response in results:
+
+		# Strip outer brackets and break into the two response components
+		clean_database_response = domain_response[0][1:-1].split(',')
+		domain = clean_database_response[0]
+		domain_id = clean_database_response[1]
+
+		# Dictionary for generating the finalised report
+		report_emails = {}
+
+		print("\nChecking the domain: " + domain)
+
+		#######################
+		# Testing Data Setup
+		#######################
+		# This if statment catches the api return of the domain "hibp-integration-tests.com"
+		# (Which returns as forbidden) and replaces it with a faked 'success' response
+		# This allows us to use the test data in the API and treat it as a pseudo domain
+		response = [True, requests.Response()] # Create empty response
+		dict_response = {}
+		if domain == "hibp-integration-tests.com":
+			response[1].status_code = 200
+			utf_string = '[{"not-active-and-active-breach": ["Adobe"],"multiple-breaches": ["Adobe","Gawker","Stratfor"], "spam-list-only":["OnlineSpambot"]}]'
+			bytes_string = utf_string.encode('utf-8')
+			response[1]._content = bytes_string
+			dict_response = response[1].json()[0]
+		else: # Actually request a domain stan
+			URL = "https://haveIbeenpwned.com/api/v3/breacheddomain/" + domain
+			response = HIBP(URL)
+			dict_response = response[1].json()
+
+		# Failed the domain search, check next domain.
+		if response[0] == False:
+			continue
+
+		needs_updating = [] # List for storing emails that need updating in each domain
+
+
+		#################
+		# Email check
+		#################
+		# For each breached email the API returned
+		# Check if it exists in the database (If not, Add it)
+		# Check the number of breaches the API returned with the numebr stored in the database
+		# If the number the API returned is greater, add the email to the update list (Needs_updating
+		for email in dict_response:
+			fetch_email_exists = 	''' 
+				SELECT EXISTS(
+				SELECT 1 
+				FROM emails 
+				WHERE email = \'{}\')
+				;'''.format(email)
+			cursor.execute(fetch_email_exists)
+			email_exists = cursor.fetchall()[0][0]
+
+			if email_exists == False:
+				insert_new_email = 	''' 
+					INSERT INTO emails(email, domain_id) 
+					VALUES (\'{}\', {});'''.format(email, domain_id)
+				cursor.execute(insert_new_email)
+				print("\tNew Email: " + email)
+
+
+			fetch_breach_count = 	'''
+				SELECT COUNT(*) 
+				FROM email_breaches 
+				JOIN emails on email_breaches.email_id = emails.id 
+				WHERE emails.email = \'{}\';'''.format(email)
+			cursor.execute(fetch_breach_count)
+			email_breach_count = cursor.fetchall()[0][0]
+
+			if email_breach_count < len(dict_response[email]):
+				needs_updating.append(email)
+
+
+
+
+
+		# Display if the domain has any emails to update
+		if len(needs_updating) > 0:
+			print("\n********* List of emails that need updating ********")
+			print(needs_updating) #temp
+		else:
+			print("\tNothing to update in this domain")
+
+		print()
+
+
+
+		report_breaches = [] # List for storing newly added breaches for the final report
+
+
+		#############
+		# Email Updating
+		#############
+		# For each email that needs updating
+		# Fetch the emails database id
+		#   For each breach the email has in the API response
+		#   Check if the breach exists in our database
+		#   If not, add it to the database and the new breaches list
+		for email in needs_updating:
+
+			report_breaches = [] # List for storing newly added breaches for the final report
+
+			print("\nChecking the email: {}@{}".format(email, domain))
+			URL = "https://haveIbeenpwned.com/api/v3/breachedaccount/{}@{}/?truncateResponse=false".format(email, domain)
+			response = HIBP(URL)
+			api_breaches = response[1].json()
+
+			fetch_email_id =	'''
+						SELECT id
+						FROM emails
+						WHERE email = \'{}\'
+						;'''.format(email)
+			cursor.execute(fetch_email_id)
+			email_id = cursor.fetchall()[0][0]
+
+			for breach in api_breaches:
+
+				fetch_breach_exists =	 '''
+							SELECT EXISTS(SELECT 1
+							FROM email_breaches
+							JOIN emails on email_breaches.email_id = emails.id
+							WHERE email_breaches.breach_name = \'{}\'
+							AND emails.email = \'{}\')
+							;'''.format(breach['Name'], email)
+				cursor.execute(fetch_breach_exists)
+				breach_exists = cursor.fetchall()[0][0]
+
+
+				if breach_exists == False:
+					print("\tNew breach: {}".format(breach['Name']))
+					insert_new_breach = '''
+							INSERT INTO email_breaches (email_id, breach_name, breach_date, scan_date)
+							VALUES ({}, \'{}\', \'{}\', CURRENT_DATE)
+							;'''.format(email_id, breach['Name'], breach['BreachDate'])
+					cursor.execute(insert_new_breach)
+					report_breaches.append(breach['Name'])
+
+	# Add in the new breaches to the email and domain dicts for the report
+			if len(report_breaches) > 0:
+				report_emails[email] = report_breaches
+		if len(report_emails) > 0:
+			report_domains[domain] = report_emails
+
+	# After all the domains have been scanned Generate the report from report_domains
+	if len(report_domains) > 0:
+		print("***** Generating Report *****")
+		now = datetime.now()
+		filename = "reports/report-{}.txt".format(now.strftime("%d-%m-%Y-%H-%M-%S"))
+		report_file = open(filename, "x")
+
+		dt_string = now.strftime("%B %d %Y")
+		report_file.write("# Auto generated report from the Identity_Assessment Module\n")
+		report_file.write("# Date: {}\n\n".format(dt_string))
+
+		for domain in report_domains:
+			report_file.write("{}\n".format(domain))
+			for email in report_domains[domain]:
+				report_file.write("\t{}\n".format(email))
+				for breach in report_emails[email]:
+					report_file.write("\t\t{}\n".format(breach))
+
+
+		report_file.close()
+		print("***** Report Generated at {} *****".format(filename))
+	else:
+		print("***** No report to generate *****")
+
+	# Update stored_breach after successful scan
+	os.remove("stored_breach")
+	file = open("stored_breach", "x")
+	file.write(latest_breach)
+	file.close()
+
+else:
+	print("*** No new breaches detected ***")
