@@ -47,11 +47,13 @@ CREATE TABLE IF NOT EXISTS email_breaches(
 );'''
 cursor.execute(add_table)
 
-print("Tables Checked")
+print("Tables Wipped")
 conn.close()
 
 
-#Check API
-response = requests.get("https://haveIbeenpwned.com/api/v3/subscription/status", headers={'hibp-api-key':os.environ['HIBP_API_KEY']})
-print("API Checked")
-print(response.json())
+#Wipe stored_breach
+os.remove("stored_breach")
+file = open("stored_breach", "x")
+file.write("Wiped")
+file.close()
+print("Stored_breach Wiped")

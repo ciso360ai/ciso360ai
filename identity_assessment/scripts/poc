@@ -29,7 +29,7 @@ def HIBP(url):
 			print("\tUnable to find {}".format(url))
 			return [False, response]
 		case 429:
-				time_to sleep = response.headers['Retry-After']
+				time_to_sleep =int(response.headers['Retry-After'])
 				print("\t*** Waiting {} seconds ***".format(time_to_sleep))
 				time.sleep(time_to_sleep)
 				response = HIBP(url)
@@ -66,10 +66,6 @@ if response[0] == True:
 	file.close()
 	if stored_breach != latest_breach: 
 		new_breach_bool = True
-		os.remove("stored_breach")
-		file = open("stored_breach", "x")
-		file.write(latest_breach)
-		file.close()
 		print("*** New Breach Discovered ***")
 else:
 	print("Failed to connect to HIBP")
@@ -119,12 +115,12 @@ if new_breach_bool:
 		else: # Actually request a domain stan
 			URL = "https://haveIbeenpwned.com/api/v3/breacheddomain/" + domain
 			response = HIBP(URL)
+			dict_response = response[1].json()
 
 		# Failed the domain search, check next domain.
 		if response[0] == False:
 			continue
 
-		dict_response = response[1].json()
 		needs_updating = [] # List for storing emails that need updating in each domain
 
 
@@ -239,7 +235,7 @@ if new_breach_bool:
 	if len(report_domains) > 0:
 		print("***** Generating Report *****")
 		now = datetime.now()
-		filename = "Reports/Report-{}.txt".format(now.strftime("%d-%m-%Y-%H-%M-%S"))
+		filename = "reports/report-{}.txt".format(now.strftime("%d-%m-%Y-%H-%M-%S"))
 		report_file = open(filename, "x")
 
 		dt_string = now.strftime("%B %d %Y")
@@ -258,6 +254,12 @@ if new_breach_bool:
 		print("***** Report Generated at {} *****".format(filename))
 	else:
 		print("***** No report to generate *****")
+
+	# Update stored_breach after successful scan
+	os.remove("stored_breach")
+	file = open("stored_breach", "x")
+	file.write(latest_breach)
+	file.close()
 
 else:
 	print("*** No new breaches detected ***")
