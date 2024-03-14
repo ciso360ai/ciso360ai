@@ -7,33 +7,38 @@ import requests
 import psycopg2
 from psycopg2 import sql
 
+
 # Function to run shell commands and return the output
 def run_command(command):
 	result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 	return result.stdout.decode('utf-8'), result.stdrr.decode('utf-8'), result.returncode
 
-# Print out the PostgreSQL Environment variables
-host = os.environ['PG1_HOST'],
-dbname = os.environ['PG1_DB'],
-port = os.environ['PG1_PORT'],
-user = os.environ['PG1_USER'],
-password = os.environ['PG1_PASS']
+# PostgreSQL Environment variables
+conn = psycopg2.connect(
+   host = os.environ['POSTGRES_HOST'],
+   database = os.environ['POSTGRES_DB'],
+   port = os.environ['POSTGRES_PORT'],
+   user = os.environ['POSTGRES_USER'],
+   password = os.environ['POSTGRES_PASSWORD']
+)
+conn.autocommit = True
+cursor = conn.cursor()
 
 print("Starting Healthcheck...")
 
 # Testing the variables are working correctly
-#print(host)
-#print(dbname)
-#print(port)
-#print(user)
-#print(password)
+print(host)
+print(dbname)
+print(port)
+print(user)
+print(password)
 
 # Check if the table exists in Postgres
 try:
 	connection = psycopg2.connect(
 		dbname=os.environ['PG1_DB'],
 		user=os.environ['PG1_USER'],
-		password=os.environ['PG1_PASS'],
+		password=os.environ['PG1_PASSWORD'],
 		host=os.environ['PG1_HOST'],
 		port=os.environ['PG1_PORT']
 	)
@@ -65,7 +70,7 @@ except Exception as e:
 	print(e)
 
 # Check the Have I Been Pwned API connection
-hbp_api_key = '0000'
+hbp_api_key = os.environ['HIBP_API_KEY']
 headers = {'hibp-api-key': hbp_api_key}
 response = requests.get("https://haveibeenpwned.com/api/v3/breachedaccount/test@example.com", headers=headers)
 if response.status_code == 200:

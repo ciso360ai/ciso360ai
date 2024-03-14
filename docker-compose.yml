@@ -179,10 +179,10 @@ services:
     hostname: identity_assessment
     restart: always
     depends_on:
-      scan_tls:
+      postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8008/readiness || exit 1"]
+      test: ["CMD-SHELL", "python3 healthcheck.py"]
       timeout: 1s
       interval: 1s
       retries: 5
@@ -201,7 +201,7 @@ services:
       - ./identity_assessment/scripts/test:/usr/local/bin/test
       - ./identity_assessment/scripts/wipe:/usr/local/bin/wipe
       - ./identity_assessment/scripts/poc:/usr/local/bin/poc
-        ./identity_assessment/reports:/usr/local/bin/reports
+      - ./identity_assessment/reports:/usr/local/bin/reports
       - ./identity_assessment/config:/scan_domain/config
     networks:
       - internal

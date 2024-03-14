@@ -58,9 +58,9 @@ print("*** Checking for new breaches")
 URL = "https://haveIbeenpwned.com/api/v3/latestbreach"
 response = HIBP(URL)
 new_breach_bool = False
+latest_breach = response[1].json()['Name']
 
 if response[0] == True:
-	latest_breach = response[1].json()['Name']
 	file = open("stored_breach")
 	stored_breach = file.readline()
 	file.close()
