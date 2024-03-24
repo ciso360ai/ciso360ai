@@ -1,4 +1,3 @@
 requests
 psycopg2-binary
 requests
-json
