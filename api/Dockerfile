@@ -43,7 +43,7 @@ COPY --from=build /home/app/out /tmp/available
 
 # Currently required, check if needed in future release
 RUN corepack enable \
-  && corepack prepare pnpm@8.15.4 --activate \
+  && corepack prepare pnpm@8.15.5 --activate \
   && chown node:node /directus
 
 RUN pnpm install --prefer-offline        
