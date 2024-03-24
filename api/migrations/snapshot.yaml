@@ -1,5 +1,5 @@
 version: 1
-directus: 10.10.2
+directus: 10.10.4
 vendor: postgres
 collections:
   - collection: actions
@@ -19,7 +19,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 11
+      sort: 9
       sort_field: sort
       translations: null
       unarchive_value: in progress
@@ -43,7 +43,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 24
+      sort: 21
       sort_field: null
       translations: null
       unarchive_value: null
@@ -67,7 +67,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 25
+      sort: 22
       sort_field: null
       translations: null
       unarchive_value: null
@@ -91,7 +91,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 26
+      sort: 23
       sort_field: null
       translations: null
       unarchive_value: null
@@ -163,7 +163,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 27
+      sort: 24
       sort_field: null
       translations: null
       unarchive_value: null
@@ -187,7 +187,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 12
+      sort: 10
       sort_field: null
       translations: null
       unarchive_value: draft
@@ -211,7 +211,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 37
+      sort: null
       sort_field: null
       translations: null
       unarchive_value: null
@@ -235,7 +235,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 22
+      sort: 19
       sort_field: null
       translations: null
       unarchive_value: null
@@ -259,7 +259,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 13
+      sort: 11
       sort_field: null
       translations: null
       unarchive_value: draft
@@ -283,7 +283,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 38
+      sort: null
       sort_field: null
       translations: null
       unarchive_value: null
@@ -307,7 +307,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 7
+      sort: 6
       sort_field: null
       translations: null
       unarchive_value: active
@@ -379,7 +379,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 28
+      sort: 25
       sort_field: null
       translations: null
       unarchive_value: null
@@ -403,7 +403,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 14
+      sort: 11
       sort_field: null
       translations: null
       unarchive_value: draft
@@ -451,7 +451,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 18
+      sort: 15
       sort_field: null
       translations: null
       unarchive_value: null
@@ -475,7 +475,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 19
+      sort: 16
       sort_field: null
       translations: null
       unarchive_value: null
@@ -523,7 +523,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 29
+      sort: 26
       sort_field: null
       translations: null
       unarchive_value: null
@@ -551,7 +551,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 16
+      sort: 13
       sort_field: null
       translations: null
       unarchive_value: active
@@ -575,7 +575,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 21
+      sort: 18
       sort_field: null
       translations: null
       unarchive_value: null
@@ -599,7 +599,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 30
+      sort: 27
       sort_field: null
       translations: null
       unarchive_value: null
@@ -647,7 +647,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 10
+      sort: 8
       sort_field: sort
       translations: null
       unarchive_value: draft
@@ -671,7 +671,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 31
+      sort: 28
       sort_field: null
       translations: null
       unarchive_value: null
@@ -695,7 +695,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 35
+      sort: 33
       sort_field: null
       translations: null
       unarchive_value: null
@@ -719,7 +719,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 32
+      sort: 29
       sort_field: null
       translations: null
       unarchive_value: null
@@ -743,7 +743,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 33
+      sort: 30
       sort_field: null
       translations: null
       unarchive_value: null
@@ -767,7 +767,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 17
+      sort: 14
       sort_field: null
       translations: null
       unarchive_value: null
@@ -791,7 +791,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 20
+      sort: 17
       sort_field: null
       translations: null
       unarchive_value: null
@@ -815,7 +815,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 34
+      sort: 31
       sort_field: null
       translations: null
       unarchive_value: null
@@ -863,7 +863,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 15
+      sort: 12
       sort_field: sort
       translations: null
       unarchive_value: draft
@@ -887,7 +887,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 23
+      sort: 20
       sort_field: null
       translations: null
       unarchive_value: null
@@ -911,7 +911,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 8
+      sort: 7
       sort_field: null
       translations: null
       unarchive_value: active
