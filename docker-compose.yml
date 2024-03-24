@@ -171,6 +171,40 @@ services:
       - internal
       - db
 
+  scan_email:
+    image: ghcr.io/ciso360ai/scan_email:latest
+    build:
+      context: ./scan_email/.
+    container_name: scan_email
+    hostname: scan_email
+    restart: always
+    depends_on:
+      scan_tls:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8008/readiness || exit 1"]
+      timeout: 1s
+      interval: 1s
+      retries: 5
+    environment:
+      POSTGRES_HOST: ${PG1_HOST}
+      POSTGRES_PORT: ${PG1_PORT}
+      POSTGRES_DB: ${PG1_DB}
+      POSTGRES_USER: ${PG1_USER}
+      POSTGRES_PASSWORD: ${PG1_PASS}
+      SERVER_NAME: ${SERVER_NAME}
+      HIBP_API_KEY: ${HIBP_API_KEY}
+    # command: ["--cron-workers=4"]
+    volumes:
+      - ./results:/results
+      - ./logs:/logs
+      - ./scan_email/scripts/scan_domain_hibp:/usr/local/bin/scan_domain_hibp
+      - ./scan_email/scripts/scan_email_hibp:/usr/local/bin/scan_email_hibp
+      - ./scan_email/config:/scan_domain/config
+    networks:
+      - internal
+      - db
+
 networks:
   proxy:
   db:
