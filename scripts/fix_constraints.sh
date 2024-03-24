@@ -186,4 +186,5 @@ $PWD/scripts/regular_jobs.sh
 $PWD/scripts/regular_ip_tls_scan.sh
 $PWD/scripts/regular_host_tls_scan.sh
 $PWD/scripts/regular_domain_scan.sh
-$PWD/scripts/regular_identity_assessment.sh
+$PWD/scripts/regular_domain_hibp_scan.sh
+$PWD/scripts/regular_email_scan.sh

@@ -171,18 +171,18 @@ services:
       - internal
       - db
 
-  identity_assessment:
-    image: ghcr.io/ciso360ai/identity_assessment:latest
+  scan_email:
+    image: ghcr.io/ciso360ai/scan_email:latest
     build:
-      context: ./identity_assessment/.
-    container_name: identity_assessment
-    hostname: identity_assessment
+      context: ./scan_email/.
+    container_name: scan_email
+    hostname: scan_email
     restart: always
     depends_on:
-      postgres:
+      scan_tls:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "python3 healthcheck.py"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8008/readiness || exit 1"]
       timeout: 1s
       interval: 1s
       retries: 5
@@ -198,11 +198,9 @@ services:
     volumes:
       - ./results:/results
       - ./logs:/logs
-      - ./identity_assessment/scripts/test:/usr/local/bin/test
-      - ./identity_assessment/scripts/wipe:/usr/local/bin/wipe
-      - ./identity_assessment/scripts/poc:/usr/local/bin/poc
-      - ./identity_assessment/reports:/usr/local/bin/reports
-      - ./identity_assessment/config:/scan_domain/config
+      - ./scan_email/scripts/scan_domain_hibp:/usr/local/bin/scan_domain_hibp
+      - ./scan_email/scripts/scan_email_hibp:/usr/local/bin/scan_email_hibp
+      - ./scan_email/config:/scan_domain/config
     networks:
       - internal
       - db
