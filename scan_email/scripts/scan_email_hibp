@@ -1,0 +1,204 @@
+#!/usr/bin/python3
+# CISO360AI office@CISO360.AI
+# Code collaborators AUT team: Matthew, Sahim, Ali
+
+import sys
+import time
+from datetime import datetime
+import os
+import requests
+import psycopg2
+import json
+
+# Redirect stdout to /proc/1/fd/1 to run in Docker
+sys.stdout = open('/proc/1/fd/1', 'w')
+
+# Load the .env file
+HIBP_API="https://haveibeenpwned.com/api/v3/"
+HIBP_API_KEY = os.environ['HIBP_API_KEY']
+
+# A function to help handle the API when code 429 (Too many requests) is triggered
+def HIBP(url):
+	response = requests.get(url,
+						headers={
+						'hibp-api-key': HIBP_API_KEY, 
+			   			'user-agent': 'CISO360.AI',
+						})
+
+	match response.status_code:
+		case 400:
+			print("\tRequested with an empty string")
+			return [False, response]
+		case 401:
+			print("\tInvalid API key in .env ")
+			return [False, response]
+		case 403:
+			print("\tInvalid permissions for {}".format(url))
+			return [False, response]
+		case 404:
+			print("\tUnable to find {}".format(url))
+			return [False, response]
+		case 429:
+				time_to_sleep = int(response.headers['Retry-After'])
+				print("\t*** Waiting {} seconds ***".format(time_to_sleep))
+				time.sleep(time_to_sleep)
+				response = HIBP(url)
+				return response
+		case 503:
+			print("\tHIBP API service is unavailable")
+			return [False, response]
+		case 200:
+			print("\t*** HIBP successful response ***")
+			return [True, response]
+
+
+# Establishing the database connection
+conn = psycopg2.connect(
+   host = os.environ['POSTGRES_HOST'],
+   database = os.environ['POSTGRES_DB'],
+   port = os.environ['POSTGRES_PORT'],
+   user = os.environ['POSTGRES_USER'],
+   password = os.environ['POSTGRES_PASSWORD']
+)
+conn.autocommit = True
+cursor = conn.cursor()
+
+# Check for new data breaches by checking if the latest data breach is different from the localy stored one
+print("*** Checking for new email breaches")
+URL = HIBP_API + "latestbreach"
+new_breach_found = False
+try:
+	response = HIBP(URL)
+	latest_breach = response[1].json()['Name']
+	print("Latest breach: " + latest_breach)
+except:
+	print(response[1].text)
+	sys.exit(1)
+
+print("*** Fetching emails from the database ***")
+emails = '''
+		SELECT (email, id)
+		FROM emails
+		;'''
+cursor.execute(emails)
+emails = cursor.fetchall()
+
+for email_row in emails:
+	report_emails = {}
+	# Strip outer brackets and break into the two response components
+	clean_database_response = email_row[0][1:-1].split(',')
+	email = clean_database_response[0]
+	domain = email.split('@')[1]
+	print("Domain: " + str(domain))
+	email_id = clean_database_response[1]
+
+	print("\nChecking the email: " + email)
+
+	# Create email folder in /results if not existing
+	if not os.path.exists("/results/" + domain):
+		os.makedirs("/results/" + domain)
+	
+	now = datetime.now()
+	email_stored_breach = "/results/" + domain + "/stored_breach-" + email
+	filename = "/results/" + domain + "/HIBP-report-" + email + "-{}.txt".format(now.strftime("%d-%m-%Y-%H-%M-%S"))
+
+	# Check if the stored breach is the same as the latest breach
+	# If not, set new_breach_found to True
+	try:
+		file = open(email_stored_breach, "a+")
+	except IOError as e:
+		print(f"Unable to open file: {e}")
+	file.seek(0)
+	stored_breach = file.readline()
+	if stored_breach == "":
+		print("No stored breach found")
+	else:
+		print("Stored breach: " + stored_breach)
+	file.close()
+
+	if stored_breach != latest_breach: 
+		new_breach_found = True
+
+		#############
+		# Email Updating
+		#############
+		# For each email that needs updating
+		# Fetch the emails database id
+		#   For each breach the email has in the API response
+		#   Check if the breach exists in our database
+		#   If not, add it to the database and the new breaches list
+
+		print("\nChecking the email: {}".format(email))
+		URL = HIBP_API + "breachedaccount/{}/?truncateResponse=false".format(email)
+		response = HIBP(URL)
+		api_breaches = response[1].json()
+
+		for breach in api_breaches:
+
+			report_breaches = []
+
+			fetch_breach_exists = '''
+				SELECT EXISTS(SELECT 1
+				FROM breaches
+				WHERE breaches.name = \'{}\')
+				;'''.format(breach['Name'])
+			cursor.execute(fetch_breach_exists)
+			breach_exists = cursor.fetchall()[0][0]
+
+			if breach_exists == False:
+				print("\tNew breach added: {}".format(breach['Name']))
+				insert_new_breach = '''
+					INSERT INTO breaches (name, breach_date, date_updated, title, domain, affected_data)
+					VALUES (\'{}\', \'{}\', CURRENT_DATE, \'{}\', \'{}\', \'{}\')
+					RETURNING id;'''.format(breach['Name'], breach['BreachDate'], breach['Title'], breach['Domain'], json.dumps(breach['DataClasses']))
+				cursor.execute(insert_new_breach)
+				breach_id = cursor.fetchone()[0]
+
+			email_breach_exists ='''
+				SELECT EXISTS(SELECT 1
+				FROM breaches
+				JOIN breaches_emails ON breaches.id = breaches_emails.breaches_id
+				JOIN emails ON breaches_emails.emails_id = emails.id
+				WHERE breaches.name = \'{}\'
+				AND emails.email = \'{}\')
+				;'''.format(breach['Name'], email)
+			cursor.execute(email_breach_exists)
+			email_breach_exists = cursor.fetchall()[0][0]
+
+			if email_breach_exists == False:
+				print("\tEmail will be added: {}".format(breach['Name']))
+
+				insert_new_breach_email = '''
+						INSERT INTO breaches_emails (breaches_id, emails_id)
+						VALUES ((SELECT id from breaches WHERE breaches.name = \'{}\'), \'{}\')
+						;'''.format(breach['Name'], email_id)
+				cursor.execute(insert_new_breach_email)
+
+				report_breaches.append(breach['Name'])
+
+# Add in the new breaches to the email for the report
+		if len(report_breaches) > 0:
+			report_emails[email] = report_breaches
+		if len(report_emails) > 0:
+			print("***** Generating Report *****")
+			report_file = open(filename, "x")
+			dt_string = now.strftime("%B %d %Y")
+			report_file.write("# CISO360AI report - HIBP found emails \n")
+			report_file.write("# Date: {}\n\n".format(dt_string))
+
+			for email in report_emails:
+				report_file.write("\t{}\n".format(email))
+				for breach in report_emails[email]:
+					report_file.write("\t\t{}\n".format(breach))
+
+			report_file.close()
+			print("***** Report saved at {} *****".format(filename))
+		else:
+			print("***** No report to generate *****")
+	else:
+		print("*** No new breaches detected ***")
+	# Update stored_breach after successful scan
+	os.remove(email_stored_breach)
+	file = open(email_stored_breach, "x")
+	file.write(latest_breach)
+	file.close()
