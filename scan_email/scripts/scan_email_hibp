@@ -133,9 +133,9 @@ for email_row in emails:
 		response = HIBP(URL)
 		api_breaches = response[1].json()
 
-		for breach in api_breaches:
+		report_breaches = []
 
-			report_breaches = []
+		for breach in api_breaches:
 
 			fetch_breach_exists = '''
 				SELECT EXISTS(SELECT 1

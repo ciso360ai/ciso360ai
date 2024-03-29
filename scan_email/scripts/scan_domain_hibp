@@ -189,8 +189,6 @@ for domain_row in domains:
 
 		print()
 
-		report_breaches = [] # List for storing newly added breaches for the final report
-
 
 		#############
 		# Email Updating
@@ -201,6 +199,8 @@ for domain_row in domains:
 		#   Check if the breach exists in our database
 		#   If not, add it to the database and the new breaches list
 		for email in emails_to_update:
+
+			report_breaches = [] # List for storing newly added breaches for the final report
 
 			print("\nChecking the email: {}".format(email))
 			URL = HIBP_API + "breachedaccount/{}/?truncateResponse=false".format(email)
@@ -255,7 +255,7 @@ for domain_row in domains:
 					cursor.execute(insert_new_breach_email)
 
 					report_breaches.append(breach['Name'])
-
+					print(report_breaches)
 	# Add in the new breaches to the email and domain dicts for the report
 			if len(report_breaches) > 0:
 				report_emails[email] = report_breaches
