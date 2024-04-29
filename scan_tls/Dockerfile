@@ -29,7 +29,7 @@ RUN git clone --depth 1 https://github.com/drwetter/testssl.sh.git -b v${testssl
 
 COPY scripts/* /usr/local/bin/
 RUN chmod +x /usr/local/bin/* \
-    && pip3 install --no-cache-dir -r /usr/local/bin/requirements.txt
+    && pip3 install --no-cache-dir --break-system-packages -r /usr/local/bin/requirements.txt
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
