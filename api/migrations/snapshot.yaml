@@ -1,5 +1,5 @@
 version: 1
-directus: 10.10.4
+directus: 10.10.7
 vendor: postgres
 collections:
   - collection: actions
@@ -19,7 +19,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 9
+      sort: 10
       sort_field: sort
       translations: null
       unarchive_value: in progress
@@ -43,7 +43,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 21
+      sort: 23
       sort_field: null
       translations: null
       unarchive_value: null
@@ -67,7 +67,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 22
+      sort: 24
       sort_field: null
       translations: null
       unarchive_value: null
@@ -91,7 +91,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 23
+      sort: 25
       sort_field: null
       translations: null
       unarchive_value: null
@@ -108,14 +108,14 @@ collections:
       collection: breaches
       color: '#FFC23B'
       display_template: null
-      group: null
+      group: emails
       hidden: false
       icon: vpn_key_alert
       item_duplication_fields: null
       note: null
       preview_url: null
       singleton: false
-      sort: 9
+      sort: 1
       sort_field: null
       translations: null
       unarchive_value: draft
@@ -139,7 +139,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 36
+      sort: 35
       sort_field: null
       translations: null
       unarchive_value: null
@@ -163,7 +163,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 24
+      sort: 26
       sort_field: null
       translations: null
       unarchive_value: null
@@ -187,7 +187,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 10
+      sort: 11
       sort_field: null
       translations: null
       unarchive_value: draft
@@ -211,7 +211,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: null
+      sort: 36
       sort_field: null
       translations: null
       unarchive_value: null
@@ -235,7 +235,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 19
+      sort: 21
       sort_field: null
       translations: null
       unarchive_value: null
@@ -259,7 +259,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 11
+      sort: 12
       sort_field: null
       translations: null
       unarchive_value: draft
@@ -283,13 +283,37 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: null
+      sort: 37
       sort_field: null
       translations: null
       unarchive_value: null
       versioning: false
     schema:
       name: controls_actions
+  - collection: controls_directus_users
+    meta:
+      accountability: all
+      archive_app_filter: true
+      archive_field: null
+      archive_value: null
+      collapse: open
+      collection: controls_directus_users
+      color: null
+      display_template: null
+      group: null
+      hidden: true
+      icon: import_export
+      item_duplication_fields: null
+      note: null
+      preview_url: null
+      singleton: false
+      sort: null
+      sort_field: null
+      translations: null
+      unarchive_value: null
+      versioning: false
+    schema:
+      name: controls_directus_users
   - collection: devices
     meta:
       accountability: all
@@ -355,7 +379,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 6
+      sort: 7
       sort_field: null
       translations: null
       unarchive_value: active
@@ -379,7 +403,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 25
+      sort: 27
       sort_field: null
       translations: null
       unarchive_value: null
@@ -403,7 +427,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 11
+      sort: 13
       sort_field: null
       translations: null
       unarchive_value: draft
@@ -451,7 +475,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 15
+      sort: 17
       sort_field: null
       translations: null
       unarchive_value: null
@@ -475,7 +499,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 16
+      sort: 18
       sort_field: null
       translations: null
       unarchive_value: null
@@ -523,7 +547,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 26
+      sort: 28
       sort_field: null
       translations: null
       unarchive_value: null
@@ -551,7 +575,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 13
+      sort: 15
       sort_field: null
       translations: null
       unarchive_value: active
@@ -575,7 +599,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 18
+      sort: 20
       sort_field: null
       translations: null
       unarchive_value: null
@@ -599,7 +623,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 27
+      sort: 29
       sort_field: null
       translations: null
       unarchive_value: null
@@ -647,7 +671,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 8
+      sort: 9
       sort_field: sort
       translations: null
       unarchive_value: draft
@@ -671,7 +695,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 28
+      sort: 30
       sort_field: null
       translations: null
       unarchive_value: null
@@ -695,7 +719,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 33
+      sort: 34
       sort_field: null
       translations: null
       unarchive_value: null
@@ -719,7 +743,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 29
+      sort: 31
       sort_field: null
       translations: null
       unarchive_value: null
@@ -743,7 +767,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 30
+      sort: 32
       sort_field: null
       translations: null
       unarchive_value: null
@@ -767,7 +791,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 14
+      sort: 16
       sort_field: null
       translations: null
       unarchive_value: null
@@ -791,7 +815,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 17
+      sort: 19
       sort_field: null
       translations: null
       unarchive_value: null
@@ -815,7 +839,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 31
+      sort: 33
       sort_field: null
       translations: null
       unarchive_value: null
@@ -863,7 +887,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 12
+      sort: 14
       sort_field: sort
       translations: null
       unarchive_value: draft
@@ -887,7 +911,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 20
+      sort: 22
       sort_field: null
       translations: null
       unarchive_value: null
@@ -911,7 +935,7 @@ collections:
       note: null
       preview_url: null
       singleton: false
-      sort: 7
+      sort: 8
       sort_field: null
       translations: null
       unarchive_value: active
@@ -977,7 +1001,7 @@ fields:
         template: '{{compliance_id.requirement.frameworks_id.subcategory}}'
       readonly: false
       required: false
-      sort: 14
+      sort: 15
       special:
         - m2m
       translations: null
@@ -1002,7 +1026,7 @@ fields:
         template: null
       readonly: false
       required: false
-      sort: 13
+      sort: 14
       special:
         - m2m
       translations:
@@ -1028,7 +1052,7 @@ fields:
       options: null
       readonly: true
       required: false
-      sort: 9
+      sort: 10
       special:
         - date-created
       translations: null
@@ -1067,7 +1091,7 @@ fields:
       options: null
       readonly: false
       required: false
-      sort: 5
+      sort: 6
       special: null
       translations: null
       validation: null
@@ -1106,7 +1130,7 @@ fields:
       options: null
       readonly: true
       required: false
-      sort: 11
+      sort: 12
       special:
         - date-updated
       translations: null
@@ -1252,7 +1276,7 @@ fields:
       translations: null
       validation: null
       validation_message: null
-      width: full
+      width: half
   - collection: actions
     field: risks
     type: alias
@@ -1271,7 +1295,7 @@ fields:
         template: '{{risks_id.risk}}'
       readonly: false
       required: false
-      sort: 12
+      sort: 13
       special:
         - m2m
       translations:
@@ -1296,7 +1320,7 @@ fields:
       options: null
       readonly: false
       required: false
-      sort: 7
+      sort: 8
       special: null
       translations: null
       validation: null
@@ -1356,7 +1380,7 @@ fields:
             value: done
       readonly: false
       required: false
-      sort: 6
+      sort: 7
       special: null
       translations: null
       validation: null
@@ -1395,7 +1419,7 @@ fields:
         template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
       readonly: true
       required: false
-      sort: 8
+      sort: 9
       special:
         - user-created
       translations: null
@@ -1435,7 +1459,7 @@ fields:
         template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
       readonly: true
       required: false
-      sort: 10
+      sort: 11
       special:
         - user-updated
       translations: null
@@ -1458,6 +1482,45 @@ fields:
       has_auto_increment: false
       foreign_key_table: directus_users
       foreign_key_column: id
+  - collection: actions
+    field: tags
+    type: json
+    meta:
+      collection: actions
+      conditions: null
+      display: null
+      display_options: null
+      field: tags
+      group: null
+      hidden: false
+      interface: tags
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 5
+      special:
+        - cast-json
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: tags
+      table: actions
+      data_type: json
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
   - collection: actions_directus_users
     field: actions_id
     type: integer
@@ -3527,7 +3590,7 @@ fields:
       options: null
       readonly: false
       required: false
-      sort: 8
+      sort: 10
       special:
         - m2m
       translations: null
@@ -3637,7 +3700,7 @@ fields:
       options: null
       readonly: true
       required: false
-      sort: 10
+      sort: 12
       special:
         - date-created
       translations: null
@@ -3677,7 +3740,7 @@ fields:
       options: null
       readonly: true
       required: false
-      sort: 12
+      sort: 14
       special:
         - date-updated
       translations: null
@@ -3948,7 +4011,7 @@ fields:
         template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
       readonly: true
       required: false
-      sort: 9
+      sort: 11
       special:
         - user-created
       translations: null
@@ -3988,7 +4051,7 @@ fields:
         template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
       readonly: true
       required: false
-      sort: 11
+      sort: 13
       special:
         - user-updated
       translations: null
@@ -4011,6 +4074,72 @@ fields:
       has_auto_increment: false
       foreign_key_table: directus_users
       foreign_key_column: id
+  - collection: controls
+    field: tags
+    type: json
+    meta:
+      collection: controls
+      conditions: null
+      display: null
+      display_options: null
+      field: tags
+      group: null
+      hidden: false
+      interface: tags
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 9
+      special:
+        - cast-json
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
+    schema:
+      name: tags
+      table: controls
+      data_type: json
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: controls
+    field: responsible
+    type: alias
+    meta:
+      collection: controls
+      conditions: null
+      display: related-values
+      display_options:
+        template: '{{directus_users_id.first_name}} {{directus_users_id.last_name}}'
+      field: responsible
+      group: null
+      hidden: false
+      interface: list-m2m
+      note: null
+      options:
+        enableCreate: false
+        limit: 5
+        template: '{{directus_users_id.first_name}} {{directus_users_id.last_name}}'
+      readonly: false
+      required: false
+      sort: 8
+      special:
+        - m2m
+      translations: null
+      validation: null
+      validation_message: null
+      width: half
   - collection: controls_actions
     field: actions_id
     type: integer
@@ -4125,6 +4254,120 @@ fields:
       has_auto_increment: true
       foreign_key_table: null
       foreign_key_column: null
+  - collection: controls_directus_users
+    field: id
+    type: integer
+    meta:
+      collection: controls_directus_users
+      conditions: null
+      display: null
+      display_options: null
+      field: id
+      group: null
+      hidden: true
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 1
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: id
+      table: controls_directus_users
+      data_type: integer
+      default_value: nextval('controls_directus_users_id_seq'::regclass)
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: false
+      is_unique: true
+      is_primary_key: true
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: true
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: controls_directus_users
+    field: controls_id
+    type: uuid
+    meta:
+      collection: controls_directus_users
+      conditions: null
+      display: null
+      display_options: null
+      field: controls_id
+      group: null
+      hidden: true
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 2
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: controls_id
+      table: controls_directus_users
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: controls
+      foreign_key_column: id
+  - collection: controls_directus_users
+    field: directus_users_id
+    type: uuid
+    meta:
+      collection: controls_directus_users
+      conditions: null
+      display: null
+      display_options: null
+      field: directus_users_id
+      group: null
+      hidden: true
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 3
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: directus_users_id
+      table: controls_directus_users
+      data_type: uuid
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: directus_users
+      foreign_key_column: id
   - collection: devices
     field: comments
     type: text
@@ -5695,7 +5938,7 @@ fields:
       interface: list-m2m
       note: null
       options:
-        template: '{{breaches_id.name}}'
+        template: '{{breaches_id.name}}: {{breaches_id.affected_data}}'
       readonly: false
       required: false
       sort: 5
@@ -5858,6 +6101,235 @@ fields:
       foreign_key_table: null
       foreign_key_column: null
   - collection: execution_log
+    field: last_run
+    type: timestamp
+    meta:
+      collection: execution_log
+      conditions: null
+      display: null
+      display_options: null
+      field: last_run
+      group: null
+      hidden: false
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: last_run
+      table: execution_log
+      data_type: timestamp with time zone
+      default_value: now()
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: execution_log
+    field: finished
+    type: timestamp
+    meta:
+      collection: execution_log
+      conditions: null
+      display: null
+      display_options: null
+      field: finished
+      group: null
+      hidden: false
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: finished
+      table: execution_log
+      data_type: timestamp with time zone
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: execution_log
+    field: pid
+    type: bigInteger
+    meta:
+      collection: execution_log
+      conditions: null
+      display: null
+      display_options: null
+      field: pid
+      group: null
+      hidden: false
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: pid
+      table: execution_log
+      data_type: bigint
+      default_value: null
+      max_length: null
+      numeric_precision: 64
+      numeric_scale: 0
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: execution_log
+    field: returncode
+    type: integer
+    meta:
+      collection: execution_log
+      conditions: null
+      display: null
+      display_options: null
+      field: returncode
+      group: null
+      hidden: false
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: returncode
+      table: execution_log
+      data_type: integer
+      default_value: null
+      max_length: null
+      numeric_precision: 32
+      numeric_scale: 0
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: execution_log
+    field: ignore_error
+    type: boolean
+    meta:
+      collection: execution_log
+      conditions: null
+      display: null
+      display_options: null
+      field: ignore_error
+      group: null
+      hidden: false
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: null
+      special:
+        - cast-boolean
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: ignore_error
+      table: execution_log
+      data_type: boolean
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: execution_log
+    field: kind
+    type: unknown
+    meta:
+      collection: execution_log
+      conditions: null
+      display: null
+      display_options: null
+      field: kind
+      group: null
+      hidden: false
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: kind
+      table: execution_log
+      data_type: command_kind
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: execution_log
     field: command
     type: text
     meta:
@@ -5934,6 +6406,44 @@ fields:
       foreign_key_table: null
       foreign_key_column: null
   - collection: execution_log
+    field: client_name
+    type: text
+    meta:
+      collection: execution_log
+      conditions: null
+      display: null
+      display_options: null
+      field: client_name
+      group: null
+      hidden: false
+      interface: null
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: null
+      special: null
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: client_name
+      table: execution_log
+      data_type: text
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: false
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
+  - collection: execution_log
     field: fakeid
     type: integer
     meta:
@@ -5969,126 +6479,6 @@ fields:
       is_generated: false
       generation_expression: null
       has_auto_increment: true
-      foreign_key_table: null
-      foreign_key_column: null
-  - collection: execution_log
-    field: last_run
-    type: timestamp
-    meta: null
-    schema:
-      name: last_run
-      table: execution_log
-      data_type: timestamp with time zone
-      default_value: now()
-      max_length: null
-      numeric_precision: null
-      numeric_scale: null
-      is_nullable: true
-      is_unique: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
-      foreign_key_table: null
-      foreign_key_column: null
-  - collection: execution_log
-    field: finished
-    type: timestamp
-    meta: null
-    schema:
-      name: finished
-      table: execution_log
-      data_type: timestamp with time zone
-      default_value: null
-      max_length: null
-      numeric_precision: null
-      numeric_scale: null
-      is_nullable: true
-      is_unique: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
-      foreign_key_table: null
-      foreign_key_column: null
-  - collection: execution_log
-    field: pid
-    type: bigInteger
-    meta: null
-    schema:
-      name: pid
-      table: execution_log
-      data_type: bigint
-      default_value: null
-      max_length: null
-      numeric_precision: 64
-      numeric_scale: 0
-      is_nullable: true
-      is_unique: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
-      foreign_key_table: null
-      foreign_key_column: null
-  - collection: execution_log
-    field: returncode
-    type: integer
-    meta: null
-    schema:
-      name: returncode
-      table: execution_log
-      data_type: integer
-      default_value: null
-      max_length: null
-      numeric_precision: 32
-      numeric_scale: 0
-      is_nullable: true
-      is_unique: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
-      foreign_key_table: null
-      foreign_key_column: null
-  - collection: execution_log
-    field: kind
-    type: unknown
-    meta: null
-    schema:
-      name: kind
-      table: execution_log
-      data_type: command_kind
-      default_value: null
-      max_length: null
-      numeric_precision: null
-      numeric_scale: null
-      is_nullable: true
-      is_unique: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
-      foreign_key_table: null
-      foreign_key_column: null
-  - collection: execution_log
-    field: client_name
-    type: text
-    meta: null
-    schema:
-      name: client_name
-      table: execution_log
-      data_type: text
-      default_value: null
-      max_length: null
-      numeric_precision: null
-      numeric_scale: null
-      is_nullable: false
-      is_unique: false
-      is_primary_key: false
-      is_generated: false
-      generation_expression: null
-      has_auto_increment: false
       foreign_key_table: null
       foreign_key_column: null
   - collection: frameworks
@@ -8807,7 +9197,7 @@ fields:
         limit: 5
       readonly: false
       required: false
-      sort: 11
+      sort: 12
       special:
         - m2m
       translations: null
@@ -8864,7 +9254,7 @@ fields:
             value: financial
       readonly: false
       required: false
-      sort: 13
+      sort: 14
       special: null
       translations: null
       validation: null
@@ -8906,7 +9296,7 @@ fields:
         template: '{{controls_id.class}}: {{controls_id.control}}'
       readonly: false
       required: false
-      sort: 10
+      sort: 11
       special:
         - m2m
       translations: null
@@ -8930,7 +9320,7 @@ fields:
       options: null
       readonly: true
       required: false
-      sort: 14
+      sort: 15
       special:
         - date-created
       translations: null
@@ -8969,7 +9359,7 @@ fields:
       options: null
       readonly: false
       required: false
-      sort: 12
+      sort: 13
       special: null
       translations: null
       validation: null
@@ -9008,7 +9398,7 @@ fields:
       options: null
       readonly: true
       required: false
-      sort: 15
+      sort: 16
       special:
         - date-updated
       translations: null
@@ -9048,7 +9438,7 @@ fields:
         imageToken: REPLACE_ME
       readonly: false
       required: false
-      sort: 9
+      sort: 10
       special: null
       translations: null
       validation: null
@@ -9432,7 +9822,7 @@ fields:
       options: null
       readonly: false
       required: false
-      sort: 16
+      sort: 17
       special: null
       translations: null
       validation: null
@@ -9541,7 +9931,7 @@ fields:
         template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
       readonly: true
       required: false
-      sort: 17
+      sort: 18
       special:
         - user-created
       translations: null
@@ -9581,7 +9971,7 @@ fields:
         template: '{{avatar.$thumbnail}} {{first_name}} {{last_name}}'
       readonly: true
       required: false
-      sort: 18
+      sort: 19
       special:
         - user-updated
       translations: null
@@ -9604,6 +9994,45 @@ fields:
       has_auto_increment: false
       foreign_key_table: directus_users
       foreign_key_column: id
+  - collection: risks
+    field: tags
+    type: json
+    meta:
+      collection: risks
+      conditions: null
+      display: null
+      display_options: null
+      field: tags
+      group: null
+      hidden: false
+      interface: tags
+      note: null
+      options: null
+      readonly: false
+      required: false
+      sort: 9
+      special:
+        - cast-json
+      translations: null
+      validation: null
+      validation_message: null
+      width: full
+    schema:
+      name: tags
+      table: risks
+      data_type: json
+      default_value: null
+      max_length: null
+      numeric_precision: null
+      numeric_scale: null
+      is_nullable: true
+      is_unique: false
+      is_primary_key: false
+      is_generated: false
+      generation_expression: null
+      has_auto_increment: false
+      foreign_key_table: null
+      foreign_key_column: null
   - collection: risks_actions
     field: actions_id
     type: integer
@@ -12930,6 +13359,48 @@ relations:
       foreign_key_table: controls
       foreign_key_column: id
       constraint_name: controls_actions_controls_id_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: controls_directus_users
+    field: directus_users_id
+    related_collection: directus_users
+    meta:
+      junction_field: controls_id
+      many_collection: controls_directus_users
+      many_field: directus_users_id
+      one_allowed_collections: null
+      one_collection: directus_users
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: null
+      sort_field: null
+    schema:
+      table: controls_directus_users
+      column: directus_users_id
+      foreign_key_table: directus_users
+      foreign_key_column: id
+      constraint_name: controls_directus_users_directus_users_id_foreign
+      on_update: NO ACTION
+      on_delete: SET NULL
+  - collection: controls_directus_users
+    field: controls_id
+    related_collection: controls
+    meta:
+      junction_field: directus_users_id
+      many_collection: controls_directus_users
+      many_field: controls_id
+      one_allowed_collections: null
+      one_collection: controls
+      one_collection_field: null
+      one_deselect_action: nullify
+      one_field: responsible
+      sort_field: null
+    schema:
+      table: controls_directus_users
+      column: controls_id
+      foreign_key_table: controls
+      foreign_key_column: id
+      constraint_name: controls_directus_users_controls_id_foreign
       on_update: NO ACTION
       on_delete: SET NULL
   - collection: devices

@@ -84,7 +84,8 @@ details += '</table>'
 
 # {'id': 'CRIME_TLS', 'severity': 'OK', 'cve': 'CVE-2012-4929', 'cwe': 'CWE-310', 'finding': 'not vulnerable'} 
 
-add_ips = '''INSERT INTO ips (ip,scan_id) VALUES (%s,%s)'''
+status_ip = "inactive"
+add_ips = '''INSERT INTO ips (ip,scan_id,status) VALUES (%s,%s,%s)'''
 add_ports = '''INSERT INTO ports (port,scan_id) VALUES (%s,%s)'''
 # update_domain_ips = '''INSERT INTO domains_ips (domain_id, ip_id) 
 #                 VALUES (
@@ -133,7 +134,7 @@ else:
 update_scans_vulns = '''INSERT INTO scans_vulnerabilities (scan_id, vulnerability_id) VALUES (%s,%s)'''
 
 try:
-    cursor.execute(add_ips, (ip,scan_id))
+    cursor.execute(add_ips, (ip,scan_id,status_ip))
 except Exception as err:
     conn.rollback()
     print("ERROR add ip",ip)

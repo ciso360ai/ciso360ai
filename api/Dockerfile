@@ -20,7 +20,7 @@ RUN mkdir out && \
     # ; done
 
 # FROM node:16-alpine
-FROM directus/directus:10.10.4
+FROM directus/directus:10.10.7
 
 WORKDIR /directus
 USER root
@@ -51,8 +51,9 @@ RUN pnpm install --prefer-offline
 EXPOSE 8055
 
 # CMD npx directus bootstrap --skipAdminInit && \
-CMD npx directus bootstrap && \
- cp -r /tmp/available/* /directus/extensions/available/ && \
+CMD echo "Starting CISO360.AI ..." && \
+    npx directus bootstrap && \
+    cp -r /tmp/available/* /directus/extensions/available/ && \
 ## Add another user
     # role=$(npx directus roles create --role Admin2 --admin true | grep -v '✨') && \
     # npx directus users create --email "$ADMIN2_EMAIL" --password "$ADMIN2_PASSWORD" --role "$role" && \
