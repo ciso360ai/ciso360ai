@@ -200,6 +200,8 @@ services:
       - ./logs:/logs
       - ./scan_email/scripts/scan_domain_hibp:/usr/local/bin/scan_domain_hibp
       - ./scan_email/scripts/scan_email_hibp:/usr/local/bin/scan_email_hibp
+      - ./scan_email/scripts/domain_delete:/usr/local/bin/domain_delete
+      - ./scan_email/scripts/delete_domain_files.sh:/usr/local/bin/delete_domain_files
       - ./scan_email/config:/scan_domain/config
     networks:
       - internal

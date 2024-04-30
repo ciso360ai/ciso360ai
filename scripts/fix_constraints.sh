@@ -2,6 +2,7 @@
 
 #Fix constraints
 docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
+
 ALTER TABLE ONLY hosts_ips
 ADD CONSTRAINT hosts_ips_id_hostname_id_ip_id_key UNIQUE (id, hostname_id, ip_id);
 

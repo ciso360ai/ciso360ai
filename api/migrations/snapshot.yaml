@@ -13099,7 +13099,7 @@ relations:
       foreign_key_column: id
       constraint_name: emails_domain_id_foreign
       on_update: NO ACTION
-      on_delete: SET NULL
+      on_delete: CASCADE
   - collection: frameworks
     field: user_created
     related_collection: directus_users

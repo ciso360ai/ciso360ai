@@ -1,5 +1,13 @@
 #!/bin/bash
 
+#Alter emails table to cascade the domain delete
+docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
+ALTER TABLE emails
+    DROP CONSTRAINT emails_domain_id_foreign,
+    ADD CONSTRAINT emails_domain_id_foreign FOREIGN KEY (domain_id)
+    REFERENCES domains(id) ON DELETE CASCADE;
+EOF"
+
 #regular_domain_hibp_scan
 docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
 INSERT INTO timetable.chain 
@@ -77,5 +85,36 @@ ON domains
 FOR EACH ROW 
 WHEN (pg_trigger_depth() = 0)
 EXECUTE FUNCTION regular_domain_hibp_scan();
+
+EOF"
+
+#Attempting to create a trigger to delete folders on domain deletion.
+docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
+CREATE FUNCTION delete_domain_files() RETURNS trigger
+    LANGUAGE plpgsql
+    AS \\$\\$
+DECLARE
+
+BEGIN
+    PERFORM timetable.add_job(
+                    job_name            => 'Delete domain ' || OLD.domain,
+                    job_schedule        => '* * * * *',
+                    job_command         => 'delete_domain_files.sh ' || OLD.domain,
+                    job_ignore_errors   => FALSE,
+                    job_kind            => 'PROGRAM'::timetable.command_kind,
+                    job_client_name     => 'scan_email',
+                    job_max_instances   => 1,
+                    job_live            => TRUE,
+                    job_self_destruct   => TRUE,
+                    );
+END
+\\$\\$;
+
+CREATE TRIGGER domain_delete
+AFTER DELETE
+ON domains
+FOR EACH ROW
+WHEN (pg_trigger_depth() = 0)
+EXECUTE FUNCTION delete_domain_files();
 
 EOF"
