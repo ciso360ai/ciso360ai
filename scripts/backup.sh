@@ -1,12 +1,12 @@
 #!/bin/bash
 
 #cd /opt/cyberscan_api/backup
-docker exec -i postgres /bin/bash -c "PGPASSWORD=XXX pg_dump -c -C -x -s --column-inserts --no-comments --username root ciso360ai > /backup/schema-$(date '+%y%m%d_%H%M').sql && \
-PGPASSWORD=XXX pg_dump -c -C -x --column-inserts --no-comments --username root ciso360ai > /backup/full-$(date '+%y%m%d_%H%M').sql && \
-PGPASSWORD=XXX pg_dump -c -C -x --column-inserts --exclude-table-data '*.directus*' --no-comments --username root ciso360ai > /backup/full_nodirectus-$(date '+%y%m%d_%H%M').sql && \
-PGPASSWORD=XXX pg_dump -C -x -a --column-inserts --no-comments --username root ciso360ai > /backup/data-$(date '+%y%m%d_%H%M').sql && \
-PGPASSWORD=XXX pg_dump -C -x -a --column-inserts --exclude-table-data '*.directus*' --no-comments --username root ciso360ai > /backup/data_nodirectus-$(date '+%y%m%d_%H%M').sql
-PGPASSWORD=XXX pg_dumpall -U root > /backup/all.sql
+docker exec -i postgres /bin/bash -c "PGPASSWORD=XXX pg_dump -c -C -x -s --column-inserts --no-comments --username \$POSTGRES_USER \$POSTGRES_DB > /backup/schema-$(date '+%y%m%d_%H%M').sql && \
+PGPASSWORD=XXX pg_dump -c -C -x --column-inserts --no-comments --username \$POSTGRES_USER \$POSTGRES_DB > /backup/full-$(date '+%y%m%d_%H%M').sql && \
+PGPASSWORD=XXX pg_dump -c -C -x --column-inserts --exclude-table-data '*.directus*' --no-comments --username \$POSTGRES_USER \$POSTGRES_DB > /backup/full_nodirectus-$(date '+%y%m%d_%H%M').sql && \
+PGPASSWORD=XXX pg_dump -C -x -a --column-inserts --no-comments --username \$POSTGRES_USER \$POSTGRES_DB > /backup/data-$(date '+%y%m%d_%H%M').sql && \
+PGPASSWORD=XXX pg_dump -C -x -a --column-inserts --exclude-table-data '*.directus*' --no-comments --username \$POSTGRES_USER \$POSTGRES_DB > /backup/data_nodirectus-$(date '+%y%m%d_%H%M').sql
+PGPASSWORD=XXX pg_dumpall -U \$POSTGRES_USER > /backup/all.sql
 chmod 777 /backup/*.sql
 "
 
@@ -45,6 +45,6 @@ docker exec -i postgres /bin/bash -c "PGPASSWORD=XXX pg_dump --data-only --blobs
   -t public.directus_panels \
   -t public.directus_activity \
   -t public.directus_folders \
-  --username root ciso360ai > /backup/data_restore-$(date '+%y%m%d_%H%M').sql
+  --username \$POSTGRES_USER \$POSTGRES_DB > /backup/data_restore-$(date '+%y%m%d_%H%M').sql
 chmod 777 /backup/*.sql
 "
