@@ -1,13 +1,5 @@
 #!/bin/bash
 
-#Alter emails table to cascade the domain delete
-docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
-ALTER TABLE emails
-    DROP CONSTRAINT emails_domain_id_foreign,
-    ADD CONSTRAINT emails_domain_id_foreign FOREIGN KEY (domain_id)
-    REFERENCES domains(id) ON DELETE CASCADE;
-EOF"
-
 #regular_domain_hibp_scan
 docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
 INSERT INTO timetable.chain 

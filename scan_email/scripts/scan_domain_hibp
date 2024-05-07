@@ -255,7 +255,6 @@ for domain_row in domains:
 					cursor.execute(insert_new_breach_email)
 
 					report_breaches.append(breach['Name'])
-					print(report_breaches)
 	# Add in the new breaches to the email and domain dicts for the report
 			if len(report_breaches) > 0:
 				report_emails[email] = report_breaches
