@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#Author: Soham
 #Script is to delete domain-related files from file system 
 
 DOMAIN_NAME=$1 
