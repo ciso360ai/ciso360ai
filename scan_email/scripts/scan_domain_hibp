@@ -1,56 +1,45 @@
 #!/usr/bin/python3
-# CISO360AI office@CISO360.AI
-# Code collaborators AUT team: Matthew, Sahim, Ali
 
-import json
 import sys
-import time
 from datetime import datetime
 import os
 import requests
+from requests.adapters import HTTPAdapter, Retry
+import http
 import psycopg2
+import json
 
 # Redirect stdout to /proc/1/fd/1 to run in Docker
 sys.stdout = open('/proc/1/fd/1', 'w')
 
+# Check if a domain parameter was provided
+domain_parameter = sys.argv[1] if len(sys.argv) > 1 else None
+
 # Load the .env file
 HIBP_API="https://haveibeenpwned.com/api/v3/"
-HIBP_API_KEY = os.environ['HIBP_API_KEY']
+HIBP_API_KEY = os.getenv('HIBP_API_KEY', 00000000000000000000000000000000)
+USER_AGENT = os.getenv('USER_AGENT', 'CISO360.AI')
 
-# A function to help handle the API when code 429 (Too many requests) is triggered
+# Debug requests
+# http.client.HTTPConnection.debuglevel = 1
+
 def HIBP(url):
-	response = requests.get(url,
-						headers={
-						'hibp-api-key': HIBP_API_KEY, 
-			   			'user-agent': 'CISO360.AI',
-						})
-
-	match response.status_code:
-		case 400:
-			print("\tRequested with an empty string")
-			return [False, response]
-		case 401:
-			print("\tInvalid API key in .env ")
-			return [False, response]
-		case 403:
-			print("\tInvalid permissions for {}".format(url))
-			return [False, response]
-		case 404:
-			print("\tUnable to find {}".format(url))
-			return [False, response]
-		case 429:
-				time_to_sleep = int(response.headers['Retry-After'])
-				print("\t*** Waiting {} seconds ***".format(time_to_sleep))
-				time.sleep(time_to_sleep)
-				response = HIBP(url)
-				return response
-		case 503:
-			print("\tHIBP API service is unavailable")
-			return [False, response]
-		case 200:
-			print("\t*** Successful response ***")
-			return [True, response]
-
+	s = requests.Session()
+	retry_strategy = Retry(
+		total=5,
+		status_forcelist=[429, 500, 502, 503, 504],
+		allowed_methods=["GET", "POST"],
+		backoff_factor=2
+		)
+	adapter = HTTPAdapter(max_retries=retry_strategy)
+	s.mount("https://", adapter)
+	s.mount("http://", adapter)
+	s.headers.update({
+					'hibp-api-key': HIBP_API_KEY, 
+					'user-agent': USER_AGENT,
+					})
+	response = s.get(url,timeout=5)
+	return response
 
 # Establishing the database connection
 conn = psycopg2.connect(
@@ -69,19 +58,26 @@ URL = HIBP_API + "latestbreach"
 new_breach_found = False
 try:
 	response = HIBP(URL)
-	latest_breach = response[1].json()['Name']
+	latest_breach = response.json()['Name']
 	print("Latest breach: " + latest_breach)
 except:
-	print(response[1].text)
+	print(response)
 	sys.exit(1)
 
-print("*** Fetching domains from the database ***")
-domains = '''
-		SELECT (domain, id)
-		FROM domains
-		;'''
-cursor.execute(domains)
-domains = cursor.fetchall()
+if domain_parameter:
+    # Use the provided email parameter
+	print("*** Fetching one domain from the database ***")
+	domain_query = ''' SELECT (domain, id) FROM domains WHERE status = 'active' and domain = %s;'''
+	cursor.execute(domain_query, (domain_parameter,))
+	domains = cursor.fetchall()
+	if len(domains) == 0:
+		print("Domain not found in the database")
+		sys.exit(1)
+else:
+	print("*** Fetching all active domains from the database ***")
+	domains_query = '''SELECT (domain, id) FROM domains;'''
+	cursor.execute(domains_query)
+	domains = cursor.fetchall()
 
 for domain_row in domains:
 	report_emails = {}
@@ -90,7 +86,7 @@ for domain_row in domains:
 	domain = clean_database_response[0]
 	domain_id = clean_database_response[1]
 
-	print("\nChecking the domain: " + domain)
+	print("\nChecking domain: " + domain)
 
 	# Create domain folder in /results if not existing
 	if not os.path.exists("/results/" + domain):
@@ -116,30 +112,18 @@ for domain_row in domains:
 
 	if stored_breach != latest_breach: 
 		new_breach_found = True
-		response = [True, requests.Response()] # Create empty response
-		dict_response = {}
-		URL = HIBP_API + "breacheddomain/" + domain
+		print("\nCheck new breaches affecting: {}".format(domain))
+		URL = HIBP_API + "breacheddomain/{}".format(domain)
 		response = HIBP(URL)
-		dict_response = response[1].json()
 
-		#######################
-		# Testing Data Setup
-		#######################
-		# This if statment catches the api return of the domain "hibp-integration-tests.com"
-		# (Which returns as forbidden) and replaces it with a faked 'success' response
-		# This allows us to use the test data in the API and treat it as a pseudo domain
-		if domain == "hibp-integration-tests.com":
-			response[0] = True
-			response[1].status_code = 200
-			utf_string = '[{"not-active-and-active-breach": ["Adobe"],"multiple-breaches": ["Adobe","Gawker","Stratfor"], "spam-list-only":["OnlineSpambot"]}]'
-			bytes_string = utf_string.encode('utf-8')
-			response[1]._content = bytes_string
-			dict_response = response[1].json()[0]
-
-		# Failed the domain search, check next domain.
-		if response[0] == False:
-			print("\tNothing found on domain: " + domain)
-			break
+		if response.status_code == 404:
+			print("\nNothing found for: {}".format(domain))
+			dict_response = []
+		elif response.status_code == 200:
+			dict_response = response.json()
+		else:
+			print("API Error: {}".format(response.status_code))
+			continue
 
 		emails_to_update = [] # List for storing emails that need updating in each domain
 
@@ -156,16 +140,16 @@ for domain_row in domains:
 								SELECT EXISTS(
 								SELECT 1 
 								FROM emails 
-								WHERE email = \'{}\')
-								;'''.format(full_email)
-			cursor.execute(fetch_email_exists)
+								WHERE email = %s)
+								;'''
+			cursor.execute(fetch_email_exists, (full_email,))
 			email_exists = cursor.fetchall()[0][0]
 
 			if email_exists == False:
 				insert_new_email = 	''' 
 					INSERT INTO emails(id, email, domain_id) 
-					VALUES (gen_random_uuid(), \'{}\', {});'''.format(full_email, domain_id)
-				cursor.execute(insert_new_email)
+					VALUES (gen_random_uuid(), %s, %s);'''
+				cursor.execute(insert_new_email, (full_email, domain_id))
 				print("\tNew Email: " + full_email)
 
 			fetch_breach_count = '''
@@ -173,8 +157,8 @@ for domain_row in domains:
 				FROM breaches
 				JOIN breaches_emails ON breaches.id = breaches_emails.breaches_id
 				JOIN emails ON breaches_emails.emails_id = emails.id
-				WHERE emails.email = '{}';'''.format(full_email)
-			cursor.execute(fetch_breach_count)
+				WHERE emails.email = %s;'''
+			cursor.execute(fetch_breach_count, (full_email,))
 			email_breach_count = cursor.fetchall()[0][0]
 
 			if email_breach_count < len(dict_response[email]):
@@ -205,14 +189,13 @@ for domain_row in domains:
 			print("\nChecking the email: {}".format(email))
 			URL = HIBP_API + "breachedaccount/{}/?truncateResponse=false".format(email)
 			response = HIBP(URL)
-			api_breaches = response[1].json()
+			api_breaches = response.json()
 
-			fetch_email_id =	'''
+			fetch_email_id ='''
 						SELECT id
 						FROM emails
-						WHERE email = \'{}\'
-						;'''.format(email)
-			cursor.execute(fetch_email_id)
+						WHERE email = %s;'''
+			cursor.execute(fetch_email_id, (email,))
 			email_id = cursor.fetchall()[0][0]
 
 			for breach in api_breaches:
@@ -220,39 +203,38 @@ for domain_row in domains:
 				fetch_breach_exists = '''
 					SELECT EXISTS(SELECT 1
 					FROM breaches
-					WHERE breaches.name = \'{}\')
-					;'''.format(breach['Name'])
-				cursor.execute(fetch_breach_exists)
+					WHERE breaches.name = %s);'''
+				cursor.execute(fetch_breach_exists, (breach['Name'],))
 				breach_exists = cursor.fetchall()[0][0]
 
 				if breach_exists == False:
 					print("\tNew breach added: {}".format(breach['Name']))
 					insert_new_breach = '''
-						INSERT INTO breaches (name, breach_date, date_updated, title, domain, affected_data)
-						VALUES (\'{}\', \'{}\', CURRENT_DATE, \'{}\', \'{}\', \'{}\')
-						RETURNING id;'''.format(breach['Name'], breach['BreachDate'], breach['Title'], breach['Domain'], json.dumps(breach['DataClasses']))
-					cursor.execute(insert_new_breach)
+					INSERT INTO breaches (name, breach_date, date_updated, title, domain, affected_data)
+					VALUES (%s, %s, CURRENT_DATE, %s, %s, %s)
+					RETURNING id;'''
+					cursor.execute(insert_new_breach, (breach['Name'], breach['BreachDate'], breach['Title'], breach['Domain'], json.dumps(breach['DataClasses'])))
 					breach_id = cursor.fetchone()[0]
 
 				email_breach_exists ='''
-					SELECT EXISTS(SELECT 1
-					FROM breaches
-					JOIN breaches_emails ON breaches.id = breaches_emails.breaches_id
-					JOIN emails ON breaches_emails.emails_id = emails.id
-					WHERE breaches.name = \'{}\'
-					AND emails.email = \'{}\')
-					;'''.format(breach['Name'], email)
-				cursor.execute(email_breach_exists)
+				SELECT EXISTS(SELECT 1
+				FROM breaches
+				JOIN breaches_emails ON breaches.id = breaches_emails.breaches_id
+				JOIN emails ON breaches_emails.emails_id = emails.id
+				WHERE breaches.name = %s
+				AND emails.email = %s)
+				;'''
+				cursor.execute(email_breach_exists, (breach['Name'], email))
 				email_breach_exists = cursor.fetchall()[0][0]
 
 				if email_breach_exists == False:
 					print("\tEmail will be added: {}".format(breach['Name']))
 
 					insert_new_breach_email = '''
-							INSERT INTO breaches_emails (breaches_id, emails_id)
-							VALUES ((SELECT id from breaches WHERE breaches.name = \'{}\'), \'{}\')
-							;'''.format(breach['Name'], email_id)
-					cursor.execute(insert_new_breach_email)
+						INSERT INTO breaches_emails (breaches_id, emails_id)
+						VALUES ((SELECT id from breaches WHERE breaches.name = %s), %s)
+						;'''
+					cursor.execute(insert_new_breach_email, (breach['Name'], email_id))
 
 					report_breaches.append(breach['Name'])
 
