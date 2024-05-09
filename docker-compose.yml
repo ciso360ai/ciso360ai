@@ -201,6 +201,7 @@ services:
       SERVER_NAME: ${SERVER_NAME}
       USER_AGENT: ${USER_AGENT}
       HIBP_API_KEY: ${HIBP_API_KEY}
+      PYTHONUNBUFFERED: 1
     # command: ["--cron-workers=4"]
     volumes:
       - ./results:/results

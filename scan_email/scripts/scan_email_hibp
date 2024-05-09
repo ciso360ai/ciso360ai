@@ -8,6 +8,10 @@ from requests.adapters import HTTPAdapter, Retry
 import http
 import psycopg2
 import json
+import logging
+
+#TBD - Add logging to avoid - PYTHONUNBUFFERED=1
+# https://stackoverflow.com/questions/29663459/why-doesnt-python-app-print-anything-when-run-in-a-detached-docker-container
 
 # Redirect stdout to /proc/1/fd/1 to run in Docker
 sys.stdout = open('/proc/1/fd/1', 'w')
