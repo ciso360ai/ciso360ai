@@ -20,55 +20,58 @@ INSERT INTO timetable.task
 EOF"
 
 #initial EMAIL scan and regular schedule on INSERT and UPDATE
-docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
-CREATE FUNCTION regular_email_scan() RETURNS trigger
-    LANGUAGE plpgsql
-    AS \\$\\$
-DECLARE
-    v_task_id bigint;
-BEGIN
-    IF (TG_OP = 'INSERT') THEN
-        PERFORM timetable.add_job(
-                    job_name            => 'init email scan ' || NEW.email,
-                    job_schedule        => '* * * * *',
-                    job_command         => 'scan_email_hibp',
-                    job_parameters      => jsonb_build_array(NEW.email),
-                    job_kind            => 'PROGRAM'::timetable.command_kind,
-                    job_client_name     => 'scan_email',
-                    job_max_instances   => 1,
-                    job_live            => TRUE,
-                    job_self_destruct   => TRUE,
-                    job_ignore_errors   => TRUE
-                );
-        RETURN NEW;
-    ELSIF (TG_OP = 'UPDATE') THEN
-        IF NEW.status != OLD.status THEN
-            IF NEW.status = 'active' THEN
-                PERFORM timetable.add_job(
-                    job_name            => 'init email scan ' || NEW.email,
-                    job_schedule        => '* * * * *',
-                    job_command         => 'scan_email_hibp',
-                    job_parameters      => jsonb_build_array(NEW.email),
-                    job_kind            => 'PROGRAM'::timetable.command_kind,
-                    job_client_name     => 'scan_email',
-                    job_max_instances   => 1,
-                    job_live            => TRUE,
-                    job_self_destruct   => TRUE,
-                    job_ignore_errors   => TRUE
-                );
-                RETURN NEW;
-            END IF;
-        END IF;
-        RETURN NEW;
-    END IF;
-END
-\\$\\$;
 
-CREATE TRIGGER regular_email_scan
-AFTER INSERT OR UPDATE
-ON emails
-FOR EACH ROW 
-WHEN (pg_trigger_depth() = 0)
-EXECUTE FUNCTION regular_email_scan();
+#TBD: FIX when multiple emails are imported creates storm of tasks 
 
-EOF"
+# docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
+# CREATE FUNCTION regular_email_scan() RETURNS trigger
+#     LANGUAGE plpgsql
+#     AS \\$\\$
+# DECLARE
+#     v_task_id bigint;
+# BEGIN
+#     IF (TG_OP = 'INSERT') THEN
+#         PERFORM timetable.add_job(
+#                     job_name            => 'init email scan ' || NEW.email,
+#                     job_schedule        => '* * * * *',
+#                     job_command         => 'scan_email_hibp',
+#                     job_parameters      => jsonb_build_array(NEW.email),
+#                     job_kind            => 'PROGRAM'::timetable.command_kind,
+#                     job_client_name     => 'scan_email',
+#                     job_max_instances   => 1,
+#                     job_live            => TRUE,
+#                     job_self_destruct   => TRUE,
+#                     job_ignore_errors   => TRUE
+#                 );
+#         RETURN NEW;
+#     ELSIF (TG_OP = 'UPDATE') THEN
+#         IF NEW.status != OLD.status THEN
+#             IF NEW.status = 'active' THEN
+#                 PERFORM timetable.add_job(
+#                     job_name            => 'init email scan ' || NEW.email,
+#                     job_schedule        => '* * * * *',
+#                     job_command         => 'scan_email_hibp',
+#                     job_parameters      => jsonb_build_array(NEW.email),
+#                     job_kind            => 'PROGRAM'::timetable.command_kind,
+#                     job_client_name     => 'scan_email',
+#                     job_max_instances   => 1,
+#                     job_live            => TRUE,
+#                     job_self_destruct   => TRUE,
+#                     job_ignore_errors   => TRUE
+#                 );
+#                 RETURN NEW;
+#             END IF;
+#         END IF;
+#         RETURN NEW;
+#     END IF;
+# END
+# \\$\\$;
+
+# CREATE TRIGGER regular_email_scan
+# AFTER INSERT OR UPDATE
+# ON emails
+# FOR EACH ROW 
+# WHEN (pg_trigger_depth() = 0)
+# EXECUTE FUNCTION regular_email_scan();
+
+# EOF"
