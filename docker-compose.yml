@@ -130,6 +130,7 @@ services:
       POSTGRES_USER: ${PG1_USER}
       POSTGRES_PASSWORD: ${PG1_PASS}
       SERVER_NAME: ${SERVER_NAME}
+      USER_AGENT: ${USER_AGENT} #TBD
     # command: ["--cron-workers=4"]
     volumes:
       - ./results:/results
@@ -163,6 +164,7 @@ services:
       POSTGRES_USER: ${PG1_USER}
       POSTGRES_PASSWORD: ${PG1_PASS}
       SERVER_NAME: ${SERVER_NAME}
+      USER_AGENT: ${USER_AGENT} #TBD
     # command: ["--cron-workers=4"]
     volumes:
       - ./results:/results
@@ -197,6 +199,7 @@ services:
       POSTGRES_USER: ${PG1_USER}
       POSTGRES_PASSWORD: ${PG1_PASS}
       SERVER_NAME: ${SERVER_NAME}
+      USER_AGENT: ${USER_AGENT}
       HIBP_API_KEY: ${HIBP_API_KEY}
     # command: ["--cron-workers=4"]
     volumes:
