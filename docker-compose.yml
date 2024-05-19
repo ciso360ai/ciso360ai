@@ -1,37 +1,59 @@
 services:
 
-  rproxy:
-    image: ghcr.io/ciso360ai/rproxy:latest
+  caddy-proxy-waf:
+    image: ghcr.io/altersec/caddy-proxy-waf:latest
     build:
-      context: ./rproxy/.
-    container_name: rproxy
+      context: ./caddy-proxy-waf/.
+    container_name: caddy-proxy-waf
     restart: always
-    depends_on:
-      - api
+    # command: ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--watch"]
     ports:
       - "80:80"
       - "443:443"
+      - "443:443/udp"
     environment:
-      - PROXY=1
-      - BACKEND=http://api:8055
-      - SERVER_NAME=${SERVER_NAME}
-      - SERVER_TOKENS=Full
-      - MODSEC_SERVER_SIGNATURE=CISO360AI
-      - MODSEC_RULE_ENGINE=On # Off, DetectionOnly
-      - ALLOWED_METHODS=GET POST PUT OPTIONS PATCH DELETE
-      - ACCESSLOG=/var/log/apache2/access.log
-      - ERRORLOG=/var/log/apache2/error.log
+      - SERVER_NAME=${SERVER_NAME:-localhost}
     volumes:
-      # - ./rproxy/certs/fullchain.pem:/usr/local/apache2/conf/server.crt:ro #enable only with certbot
-      # - ./rproxy/certs/privkey.pem:/usr/local/apache2/conf/server.key:ro #enable only with certbot
-      - ./rproxy/httpd.conf:/usr/local/apache2/conf/httpd.conf
-      - ./rproxy/apache/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
-      - ./rproxy/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf:/etc/modsecurity.d/owasp-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
-      - ./rproxy/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf:/etc/modsecurity.d/owasp-crs/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf
-      - ./rproxy/htdocs:/usr/local/apache2/htdocs
-      - ./rproxy/logs:/var/log/apache2
+      - caddy_data:/data
+      - ./caddy-proxy-waf/Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy-proxy-waf/extras:/etc/caddy/extras
+      - ./caddy-proxy-waf/coraza:/opt/coraza/config
+      - ./caddy-proxy-waf/logs:/var/log/caddy
     networks:
       - proxy
+
+  # rproxy:
+  #   image: ghcr.io/ciso360ai/rproxy:latest
+  #   build:
+  #     context: ./rproxy/.
+  #   container_name: rproxy
+  #   restart: always
+  #   depends_on:
+  #     - api
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   environment:
+  #     - PROXY=1
+  #     - BACKEND=http://api:8055
+  #     - SERVER_NAME=${SERVER_NAME}
+  #     - SERVER_TOKENS=Full
+  #     - MODSEC_SERVER_SIGNATURE=CISO360AI
+  #     - MODSEC_RULE_ENGINE=On # Off, DetectionOnly
+  #     - ALLOWED_METHODS=GET POST PUT OPTIONS PATCH DELETE
+  #     - ACCESSLOG=/var/log/apache2/access.log
+  #     - ERRORLOG=/var/log/apache2/error.log
+  #   volumes:
+  #     # - ./rproxy/certs/fullchain.pem:/usr/local/apache2/conf/server.crt:ro #enable only with certbot
+  #     # - ./rproxy/certs/privkey.pem:/usr/local/apache2/conf/server.key:ro #enable only with certbot
+  #     - ./rproxy/httpd.conf:/usr/local/apache2/conf/httpd.conf
+  #     - ./rproxy/apache/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf
+  #     - ./rproxy/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf:/etc/modsecurity.d/owasp-crs/rules/REQUEST-900-EXCLUSION-RULES-BEFORE-CRS.conf
+  #     - ./rproxy/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf:/etc/modsecurity.d/owasp-crs/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf
+  #     - ./rproxy/htdocs:/usr/local/apache2/htdocs
+  #     - ./rproxy/logs:/var/log/apache2
+  #   networks:
+  #     - proxy
 
   api:
     image: ghcr.io/ciso360ai/api:latest
@@ -220,4 +242,6 @@ networks:
 
 volumes:
   postgres_data:
+    driver: local
+  caddy_data:
     driver: local
