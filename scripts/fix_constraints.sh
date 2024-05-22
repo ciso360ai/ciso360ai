@@ -175,8 +175,7 @@ EOF"
 
 docker exec -i postgres /bin/sh -c "psql -d \$POSTGRES_DB << EOF
 
-INSERT INTO ports (id, port) 
-VALUES (1, 0);
+INSERT INTO ports (port) VALUES (0);
 
 EOF"
 
