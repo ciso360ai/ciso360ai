@@ -29,7 +29,7 @@ USER root
 RUN echo "update-notifier=false" >> ~/.npmrc
 RUN apk upgrade --no-cache && \
     apk add --no-cache \
-    ssmtp tzdata yq python3 build-base && \
+    ssmtp tzdata yq python3 build-base py3-setuptools && \
     ln -sf /usr/bin/python3 /usr/bin/python
 
 COPY package.json ./
