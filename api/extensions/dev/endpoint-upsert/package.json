@@ -10,12 +10,12 @@
 		"type": "endpoint",
 		"path": "dist/index.js",
 		"source": "src/index.js",
-		"host": "^10.10.7"
+		"host": "^10.12.1"
 	},
 	"scripts": {
 		"build": "directus-extension build"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "11.0.3"
+		"@directus/extensions-sdk": "11.0.8"
 	}
 }

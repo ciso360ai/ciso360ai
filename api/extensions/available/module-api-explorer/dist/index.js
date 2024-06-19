@@ -2086,7 +2086,7 @@ pre[class*="language-"] {
   <header class="row main-header regular-font" part="section-header" style="padding:8px 4px 8px 4px;min-height:48px;">
     <div class="only-large-screen-flex" style="align-items: center;">
       <slot name="logo" class="logo" part="section-logo">
-        ${"height:36px;width:36px;margin-left:5px",N`
+        ${N`
   <div style=${"height:36px;width:36px;margin-left:5px"}>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="1 0 511 512">
       <path d="M351 411a202 202 0 01-350 0 203 203 0 01333-24 203 203 0 0117 24zm0 0" fill="#adc165"/>
