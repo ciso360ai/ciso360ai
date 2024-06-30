@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #regular_jobs
-docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 
 SELECT timetable.add_job(
     job_name            => 'VACUUM',
@@ -30,7 +30,7 @@ EOF"
 
 #Example job
 
-# docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
+# docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 
 # SELECT timetable.add_job(
 #     job_name            => 'test_job',

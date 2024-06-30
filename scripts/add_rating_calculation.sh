@@ -2,7 +2,7 @@
 
 #calculate compliance rating
 
-docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 CREATE FUNCTION calculate_compliance_rating() RETURNS trigger
     LANGUAGE plpgsql
     AS \\$\\$
@@ -23,7 +23,7 @@ EOF"
 
 #calculate risk rating
 
-docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 CREATE FUNCTION calculate_risk_rating() RETURNS trigger
     LANGUAGE plpgsql
     AS \\$\\$
