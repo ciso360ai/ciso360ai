@@ -99,18 +99,14 @@ cd /opt/ciso360ai && cp example.env .env
 
 **NOTE: CHANGE DEFAULTS**
 
-## Build - optional
-
-docker compose build
-
 ## Run
 ```bash
 cd /opt/ciso360ai
 
 #run with local Postgres:
-docker compose -f docker-compose.yml -f docker-compose.pglocal.yml up -d
+docker compose -f docker-compose.yml -f docker-compose.pglocal.yml up
 
-#or run with external DB configured in .env
+# OR run with External DB configured in .env
 docker compose up -d
 ```
 
@@ -119,7 +115,8 @@ Wait until all containers are started:
 ```
 api INFO: Server started at http://0.0.0.0:8055
 ```
-IMPORTANT, once the system is up, add constraints, a one off to provision the instance database:
+IMPORTANT, once the system is up, add constraints, a one off to provision the instance database. 
+Run in a separate console from the project folder:
 ```
 ./scripts/fix_constraints.sh
 ```
@@ -170,13 +167,23 @@ More relevant modules are available privately, give us a shout if interested in 
 ## Clean-up
 Every time you need to test the end-to-end app:
 ```bash
-docker compose down -v
+docker compose -f docker-compose.yml -f docker-compose.pglocal.yml down -v
 ```
 
-## Backup 
+## Build - optional
+
+docker compose -f docker-compose.yml -f docker-compose.pglocal.yml build
+
+## Backup
+
+For local Postgres:
 ```bash
-chmod +x scripts/*
 ./scripts/backup.sh
+```
+
+For external Postgres:
+```bash
+./scripts/backup_ext.sh
 ```
 
 # References
