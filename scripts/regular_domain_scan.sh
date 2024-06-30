@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #regular_domain_scan
-docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 INSERT INTO timetable.chain 
     (chain_name, run_at, max_instances, timeout, live, self_destruct, exclusive_execution, client_name)
     VALUES 
@@ -9,7 +9,7 @@ INSERT INTO timetable.chain
 EOF"
 
 #initial DOMAIN scan and regular schedule on INSERT and UPDATE
-docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 CREATE FUNCTION regular_domain_scan() RETURNS trigger
     LANGUAGE plpgsql
     AS \\$\\$

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Fix constraints
-docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 ALTER TABLE ONLY hosts_ips
 ADD CONSTRAINT hosts_ips_id_hostname_id_ip_id_key UNIQUE (id, hostname_id, ip_id);
 
@@ -45,7 +45,7 @@ CREATE UNIQUE INDEX i_vulns_ports ON vulnerabilities USING btree (((port_id IS N
 EOF"
 
 #Add time triggers
-docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 CREATE FUNCTION trigger_timestamp() RETURNS trigger
     LANGUAGE plpgsql
     AS \\$\\$
@@ -78,7 +78,7 @@ CREATE TRIGGER log_time_urls AFTER INSERT OR UPDATE ON urls FOR EACH ROW WHEN ((
 EOF"
 
 #Add Demo Roles
-docker exec -i postgres /bin/sh -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 INSERT INTO organisations (id, status, user_created, date_created, user_updated, date_updated, name) VALUES (1, 'active', 'ca4d7676-f94d-4561-a84f-4db18fba6d21', '2022-04-30 23:55:46.224+00', NULL, NULL, 'DEMO');
 
 INSERT INTO organisations_directus_users (id, directus_users_id, organisations_id) VALUES (1, 'ca4d7676-f94d-4561-a84f-4db18fba6d21', 1);
@@ -102,7 +102,7 @@ INSERT INTO directus_permissions (role, collection, action, permissions, validat
 EOF"
 
 #Add SYS Role Permissions
-docker exec -i postgres /bin/sh -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 
 --- SYS Import
 
@@ -116,7 +116,7 @@ INSERT INTO public.directus_permissions (role, collection, action, permissions, 
 EOF"
 
 #Add Demo Dashboard
-docker exec -i postgres /bin/sh -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 
 INSERT INTO public.directus_dashboards (id, name, icon, note, date_created, user_created) VALUES ('435514c6-0928-4e0d-9b9e-9f40b8c25167', 'Vulnerabilities', 'dashboard', NULL, '2022-04-30 23:58:20.114+00', 'ca4d7676-f94d-4561-a84f-4db18fba6d21');
 
@@ -136,7 +136,7 @@ INSERT INTO directus_panels (id, dashboard, name, icon, color, show_header, note
 EOF"
 
 #add vuln preset
-docker exec -i postgres /bin/sh -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 
 INSERT INTO directus_presets (bookmark, \"user\", role, collection, search, layout, layout_query, layout_options, refresh_interval, filter, icon, color) VALUES (NULL, NULL, NULL, 'vulnerabilities', NULL, 'tabular', '{\"tabular\":{\"fields\":[\"summary\",\"severity\",\"tags\",\"hostname_id.hostname\",\"ip_id.ip\",\"port_id.port\",\"date_updated\",\"status\",\"verified\"]}}', '{\"tabular\":{\"widths\":{\"tags\":372.07806396484375}}}', NULL, NULL, 'bookmark', NULL);
 INSERT INTO directus_presets (bookmark, \"user\", role, collection, search, layout, layout_query, layout_options, refresh_interval, filter, icon, color) VALUES ('Info', NULL, NULL, 'vulnerabilities', NULL, 'tabular', '{\"tabular\":{\"fields\":[\"summary\",\"severity\",\"tags\",\"hostname_id.hostname\",\"ip_id.ip\",\"port_id.port\",\"date_updated\",\"status\",\"verified\"],\"page\":1}}', '{\"tabular\":{\"widths\":{\"tags\":372.07806396484375}}}', NULL, '{\"_and\":[{\"severity\":{\"_eq\":\"1\"}}]}', 'info', '#3399FF');
@@ -156,7 +156,7 @@ EOF"
 
 # add alert on user login - uses admin user
 
-docker exec -i postgres /bin/sh -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 
 INSERT INTO directus_flows (id, name, icon, color, status, trigger, accountability, options, operation, date_created, user_created) 
 VALUES ('b4bf500b-669c-48cd-bdf8-df3f21182127', 'User Login Alert', 'verified_user', '#ADC247', 'active', 'event', 'all', '{\"type\":\"action\",\"scope\":[\"auth.login\"]}', 'a2be8de9-7233-4341-a044-69bf37a47b28', '2022-06-05 00:12:32.076+00', NULL);
@@ -175,7 +175,7 @@ VALUES ('ac7977fc-616b-46fc-a03f-e2048abf45f9', 'Email', 'email', 'mail', 19, 1,
 
 EOF"
 
-docker exec -i postgres /bin/sh -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 
 INSERT INTO ports (port) VALUES (0);
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #regular_domain_hibp_scan
-docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 INSERT INTO timetable.chain 
     (chain_name, run_at, max_instances, timeout, live, self_destruct, exclusive_execution, client_name)
     VALUES 
@@ -19,7 +19,7 @@ COALESCE(10 + (SELECT max(task_order) FROM timetable.task WHERE chain_id = (
 EOF"
 
 #initial DOMAIN HIBP scan and regular schedule on UPDATE
-docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 CREATE FUNCTION regular_domain_hibp_scan() RETURNS trigger
     LANGUAGE plpgsql
     AS \\$\\$

@@ -107,6 +107,10 @@ docker compose build
 ```bash
 cd /opt/ciso360ai
 
+#run with local Postgres:
+docker compose -f docker-compose.yml -f docker-compose.pglocal.yml up -d
+
+#or run with external DB configured in .env
 docker compose up -d
 ```
 

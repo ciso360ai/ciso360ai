@@ -9,7 +9,7 @@ services:
       - "443:443"
       - "443:443/udp"
     environment:
-      - SERVER_NAME=${SERVER_NAME:-localhost}
+      SERVER_NAME: ${SERVER_NAME:-localhost}
     volumes:
       - caddy_data:/data
     networks:
@@ -26,25 +26,20 @@ services:
         condition: service_healthy
       scan_tls:
         condition: service_healthy
-      postgres:
-        condition: service_healthy
     ports:
       - "8055:8055"
     env_file:
       - .env
     environment:
-      - TELEMETRY="false"
-      # - LOGGER_HTTP_USE_LEVEL="silent" # DO NOT log api since rproxy logs traffic already 
-      - DB_CLIENT="pg"
-      - DB_HOST="postgres"
-      - DB_PORT=5432
-      - DB_DATABASE=${PG1_DB}
-      - DB_USER=${PG1_USER}
-      - DB_PASSWORD=${PG1_PASS}
-      - DB_SEARCH_PATH=public,timetable
-      - CACHE_ENABLED="true"
-      - CACHE_STORE=redis"
-      - CACHE_REDIS"redis://cache:6379"
+      TELEMETRY: "false"
+      # LOGGER_HTTP_USE_LEVEL="silent" # DO NOT log api logs
+      DB_CLIENT: "pg"
+      DB_CONNECTION_STRING: "postgres://${PG1_USER:-root}:${PG1_PASS}@${PG1_HOST:-postgres}:5432/${PG1_DB}?sslmode=require"
+      DB_SEARCH_PATH: public,timetable
+      CACHE_ENABLED: "true"
+      CACHE_AUTO_PURGE: "true"
+      CACHE_STORE: "redis"
+      REDIS: "redis://cache:6379"
     volumes:
       - ./api/extensions:/directus/extensions
       - ./api/migrations:/directus/migrations
@@ -56,33 +51,11 @@ services:
       - internal
 
   cache:
-    container_name: cache
     image: redis:7-alpine
+    container_name: cache
     restart: always
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
-    networks:
-      - db
-
-  postgres:
-    image: postgres:16.2
-    container_name: postgres
-    restart: always
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-d", "${PG1_DB}" ]
-      timeout: 1s
-      retries: 5
-      interval: 1s
-    ports:
-      - 5432:5432
-    command: ["postgres", "-c", "log_statement=none", "-c", "log_checkpoints=off"]
-    environment:
-      POSTGRES_DB: ${PG1_DB}
-      POSTGRES_USER: ${PG1_USER}
-      POSTGRES_PASSWORD: ${PG1_PASS}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./backup:/backup
     networks:
       - db
 
@@ -93,12 +66,6 @@ services:
     container_name: scan_tls
     hostname: scan_tls
     restart: always
-    depends_on:
-      postgres:
-        condition: service_healthy
-    #FIX IPv6 issue
-    # sysctls:
-    #   net.ipv6.conf.lo.disable_ipv6: 1
     healthcheck:
       # test: ["CMD-SHELL", "curl -f http://localhost:8008/readiness || exit 1"]
       test: ["CMD-SHELL", "exit 0"]
@@ -106,12 +73,8 @@ services:
       interval: 1s
       retries: 5
     environment:
-      POSTGRES_HOST: ${PG1_HOST}
-      POSTGRES_PORT: ${PG1_PORT}
-      POSTGRES_DB: ${PG1_DB}
-      POSTGRES_USER: ${PG1_USER}
-      POSTGRES_PASSWORD: ${PG1_PASS}
-      SERVER_NAME: ${SERVER_NAME}
+      PGTT_URL: "postgres://${PG1_USER:-root}:${PG1_PASS}@${PG1_HOST:-postgres}:5432/${PG1_DB}?sslmode=require"
+      SERVER_NAME: ${SERVER_NAME:-localhost}
       USER_AGENT: ${USER_AGENT} #TBD
     # command: ["--cron-workers=4"]
     volumes:
@@ -121,7 +84,6 @@ services:
       - ./scan_tls/scripts/import_scan:/usr/local/bin/import_scan
     networks:
       - internal
-      - db
 
   scan_domain:
     image: ghcr.io/ciso360ai/scan_domain:latest
@@ -140,12 +102,8 @@ services:
       interval: 1s
       retries: 5
     environment:
-      POSTGRES_HOST: ${PG1_HOST}
-      POSTGRES_PORT: ${PG1_PORT}
-      POSTGRES_DB: ${PG1_DB}
-      POSTGRES_USER: ${PG1_USER}
-      POSTGRES_PASSWORD: ${PG1_PASS}
-      SERVER_NAME: ${SERVER_NAME}
+      PGTT_URL: "postgres://${PG1_USER:-root}:${PG1_PASS}@${PG1_HOST:-postgres}:5432/${PG1_DB}?sslmode=require"
+      SERVER_NAME: ${SERVER_NAME:-localhost}
       USER_AGENT: ${USER_AGENT} #TBD
     # command: ["--cron-workers=4"]
     volumes:
@@ -156,7 +114,6 @@ services:
       - ./scan_domain/config:/scan_domain/config
     networks:
       - internal
-      - db
 
   scan_email:
     image: ghcr.io/ciso360ai/scan_email:latest
@@ -175,12 +132,8 @@ services:
       interval: 1s
       retries: 5
     environment:
-      POSTGRES_HOST: ${PG1_HOST}
-      POSTGRES_PORT: ${PG1_PORT}
-      POSTGRES_DB: ${PG1_DB}
-      POSTGRES_USER: ${PG1_USER}
-      POSTGRES_PASSWORD: ${PG1_PASS}
-      SERVER_NAME: ${SERVER_NAME}
+      PGTT_URL: "postgres://${PG1_USER:-root}:${PG1_PASS}@${PG1_HOST:-postgres}:5432/${PG1_DB}?sslmode=require"
+      SERVER_NAME: ${SERVER_NAME:-localhost}
       USER_AGENT: ${USER_AGENT}
       HIBP_API_KEY: ${HIBP_API_KEY}
       PYTHONUNBUFFERED: 1
@@ -193,7 +146,6 @@ services:
       - ./scan_email/config:/scan_domain/config
     networks:
       - internal
-      - db
 
 networks:
   proxy:
@@ -201,7 +153,5 @@ networks:
   internal:
 
 volumes:
-  postgres_data:
-    driver: local
   caddy_data:
     driver: local

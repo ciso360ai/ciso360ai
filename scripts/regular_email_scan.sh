@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #regular_email_scan
-docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 INSERT INTO timetable.chain 
     (chain_name, run_at, max_instances, timeout, live, self_destruct, exclusive_execution, client_name)
     VALUES 
@@ -23,7 +23,7 @@ EOF"
 
 #TBD: FIX when multiple emails are imported creates storm of tasks 
 
-# docker exec -i postgres /bin/bash -c "psql -d \$POSTGRES_DB << EOF
+# docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 # CREATE FUNCTION regular_email_scan() RETURNS trigger
 #     LANGUAGE plpgsql
 #     AS \\$\\$

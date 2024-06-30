@@ -2,7 +2,7 @@
 
 #Add NIST CSF framework
 
-docker exec -i postgres /bin/sh -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 
 INSERT INTO frameworks (category, function, name, \"references\", status, subcategory) 
 VALUES ('Organizational Context', 'GOVERN (GV)', 'NIST CSF', 'Ex1: Share the organization''s mission (e.g., through vision and mission statements, marketing, and service strategies) to provide a basis for identifying risks that may impede that mission', 'draft', 'GV.OC-01: The organizational mission is understood and informs cybersecurity risk management');
@@ -478,7 +478,7 @@ EOF"
 
 #add default organisation compliance module
 
-docker exec -i postgres /bin/sh -c "psql -d \$POSTGRES_DB << EOF
+docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 
 INSERT INTO compliance (status) VALUES ('draft');
 INSERT INTO compliance (status) VALUES ('draft');

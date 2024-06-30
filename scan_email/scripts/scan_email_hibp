@@ -46,13 +46,13 @@ def HIBP(url):
 	return response
 
 # Establishing the database connection
-conn = psycopg2.connect(
-   host = os.environ['POSTGRES_HOST'],
-   database = os.environ['POSTGRES_DB'],
-   port = os.environ['POSTGRES_PORT'],
-   user = os.environ['POSTGRES_USER'],
-   password = os.environ['POSTGRES_PASSWORD']
-)
+conn = psycopg2.connect(os.environ['PGTT_URL'])
+#    host = os.environ['POSTGRES_HOST'],
+#    database = os.environ['POSTGRES_DB'],
+#    port = os.environ['POSTGRES_PORT'],
+#    user = os.environ['POSTGRES_USER'],
+#    password = os.environ['POSTGRES_PASSWORD']
+# )
 conn.autocommit = True
 cursor = conn.cursor()
 

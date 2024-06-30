@@ -1,0 +1,73 @@
+services:
+
+  postgres:
+    image: postgres:16.2
+    container_name: postgres
+    restart: always
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d", "${PG1_DB}" ]
+      timeout: 1s
+      retries: 5
+      interval: 1s
+    ports:
+      - 5432:5432
+    command: ["postgres", "-c", "log_statement=none", "-c", "log_checkpoints=off"]
+    environment:
+      POSTGRES_DB: ${PG1_DB}
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: ${PG1_PASS}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backup:/backup
+    networks:
+      - db
+
+  api:
+    depends_on:
+      cache:
+        condition: service_healthy
+      scan_tls:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      - DB_CONNECTION_STRING="postgres://root:${PG1_PASS}@postgres:5432/${PG1_DB}"
+    networks:
+      - db
+      - proxy
+      - internal
+
+  scan_tls:
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGTT_URL: "postgres://root:${PG1_PASS}@postgres:5432/${PG1_DB}"
+    networks:
+      - internal
+      - db
+
+  scan_domain:
+    environment:
+      PGTT_URL: "postgres://root:${PG1_PASS}@postgres:5432/${PG1_DB}"
+    networks:
+      - internal
+      - db
+
+  scan_email:
+    environment:
+      PGTT_URL: "postgres://root:${PG1_PASS}@postgres:5432/${PG1_DB}"
+    networks:
+      - internal
+      - db
+
+networks:
+  proxy:
+  db:
+  internal:
+
+volumes:
+  postgres_data:
+    driver: local
+  caddy_data:
+    driver: local
