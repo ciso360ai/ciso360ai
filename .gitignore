@@ -2,8 +2,6 @@
 .DS_Store
 backup/*.sql
 results/*
-rproxy/logs
-rproxy/certs
 api/migrations/*.yaml
 !api/migrations/snapshot.yaml
 api/uploads/*

@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: /
-
-# Looking for trouble? Join us: office@ciso360.ai
