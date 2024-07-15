@@ -2,7 +2,7 @@
 
 [CISO360AI](https://ciso360.ai/) ... 
 
-![License](https://img.shields.io/github/license/ciso360ai/ciso360ai)
+![License](https://img.shields.io/github/license/ciso360ai/ciso360ai?link=https%3A%2F%2Fgithub.com%2Fciso360ai%2Fciso360ai%2Fblob%2Fmain%2FLICENSE)
 [![CodeQL](https://github.com/ciso360ai/ciso360ai/actions/workflows/codeql.yml/badge.svg)](https://github.com/ciso360ai/ciso360ai/actions/workflows/codeql.yml)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/ciso360ai/ciso360ai/badge)](https://scorecard.dev/viewer/?uri=github.com/ciso360ai/ciso360ai)
 
