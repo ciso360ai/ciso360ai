@@ -14,20 +14,19 @@ permissions:
 
 jobs:
   analyze:
-    name: Analyze
+    name: Analyze (${{ matrix.language }})
     runs-on: ubuntu-latest
     permissions:
-      actions: read
-      contents: read
       security-events: write
 
     strategy:
       fail-fast: false
       matrix:
-        language: ["javascript", "python", "typescript"]
-        # CodeQL supports [ $supported-codeql-languages ]
-        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
-
+        include:
+        - language: javascript-typescript
+          build-mode: none
+        - language: python
+          build-mode: none
     steps:
       - name: Checkout repository
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
@@ -37,9 +36,7 @@ jobs:
         uses: github/codeql-action/init@4fa2a7953630fd2f3fb380f21be14ede0169dd4f # v3.25.12
         with:
           languages: ${{ matrix.language }}
-          # If you wish to specify custom queries, you can do so here or in a config file.
-          # By default, queries listed here will override any specified in a config file.
-          # Prefix the list here with "+" to use these queries and those in the config file.
+          build-mode: ${{ matrix.build-mode }}
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@4fa2a7953630fd2f3fb380f21be14ede0169dd4f # v3.25.12
