@@ -12,31 +12,19 @@ updates:
       interval: "daily"
   # Maintain dependencies for Docker
   - package-ecosystem: "docker"
-    directory: "/rproxy"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "docker"
     directory: "/api"
     schedule:
       interval: "daily"
   - package-ecosystem: "docker"
-    directory: "/scan_host"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "docker"
-    directory: "/scan_ip"
-    schedule:
-      interval: "weekly"
-  - package-ecosystem: "docker"
-    directory: "/scan_network"
-    schedule:
-      interval: "weekly"
-   - package-ecosystem: "docker"
     directory: "/scan_domain"
     schedule:
       interval: "weekly"
   - package-ecosystem: "docker"
-    directory: "/scan_web"
+    directory: "/scan_email"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "docker"
+    directory: "/scan_tls"
     schedule:
       interval: "weekly"
    # Maintain dependencies for Composer

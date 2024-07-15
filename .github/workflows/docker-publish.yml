@@ -15,7 +15,6 @@ on:
       - 'v*'
     paths:
       - 'api/**'
-      # - 'rproxy/**'
       - 'scan_domain/**'
       - 'scan_tls/**'
       - 'scan_email/**'
@@ -42,9 +41,6 @@ jobs:
           - image: ghcr.io/ciso360ai/api
             dockerfile: api/Dockerfile
             context: api/.
-          # - image: ghcr.io/ciso360ai/rproxy
-          #   dockerfile: rproxy/Dockerfile
-          #   context: rproxy/.
           - image: ghcr.io/ciso360ai/scan_domain
             dockerfile: scan_domain/Dockerfile
             context: scan_domain/.
