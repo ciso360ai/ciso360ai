@@ -2,11 +2,17 @@
 
 [CISO360AI](https://ciso360.ai/) ... 
 
+![License](https://img.shields.io/github/license/ciso360ai/ciso360ai)
+[![CodeQL](https://github.com/ciso360ai/ciso360ai/actions/workflows/codeql.yml/badge.svg)](https://github.com/ciso360ai/ciso360ai/actions/workflows/codeql.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/ciso360ai/ciso360ai/badge)](https://scorecard.dev/viewer/?uri=github.com/ciso360ai/ciso360ai)
+
 ## Features
  * Attack Surface Discovery: continuous discovery of assets, identities, domains, hosts, IPs, URLs, ports
  * Offensive Toolchain: network and web assets scanning based on passive/active/offensive tools
  * Vulnerability Management: continuous vulnerability management, triage, prioritisation, tracking and alerting
- * Risk management: risk assessment and mitigation tracking. WIP: AI assisted prioritisation and prediction
+ * Risk management: risk assessment and mitigation tracking. 
+ * Compliance: NIST CSF v2
+ * Identity assessment: dark-web compromised identity and IP scanner; HIBP API integration
  * Collaboration: Escalation, sharing, alerting, third-party vendor assessments
 
 ![CISO360AI in action](./api/uploads/ciso360ai_slide.gif)
@@ -14,8 +20,8 @@
 Note: not all features are open-sourced yet
 
 ## TBD
+ * WIP: AI assisted prioritisation and prediction
  * Privacy assessment: GDPR web scan, cookies, SSL non-conformance
- * Identity assessment: dark-web compromised identity and IP scanner
  * ISMS Policy bundle: cybersecurity policy pack compliant with recognised standards
  * Gamification: Solving the puzzle...
 
