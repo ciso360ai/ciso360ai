@@ -16,7 +16,7 @@
 #     ; done
 
 # FROM node:16-alpine
-FROM directus/directus:11.0.2
+FROM directus/directus:10.13.1
 
 WORKDIR /directus
 USER root
