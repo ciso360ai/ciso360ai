@@ -46,7 +46,7 @@ scan(){
     #amass
 	echo -e "\namass scan"
     log_activity "scan" "domains" "amass on $domain"
-    amass enum -silent -passive -timeout 1 -norecursive -nolocaldb -noalts -blf exclude.txt -nf domains.txt -o domains.amass -config /scan_domain/config/amass.ini -d "$domain"
+    timeout 120 amass enum -silent -passive -timeout 1 -norecursive -nolocaldb -noalts -blf exclude.txt -nf domains.txt -o domains.amass -config /scan_domain/config/amass.ini -d "$domain"
        grep -v -f exclude.txt -x domains.amass | anew domains.txt
 
     grep -v $domain -x domains.txt > subdomains.txt
