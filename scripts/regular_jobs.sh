@@ -17,7 +17,7 @@ SELECT timetable.add_job(
 
 SELECT timetable.add_job(
     job_name            => 'MONTHLY_LOG_CLEANUP',
-    job_schedule        => '0 23 * * *',
+    job_schedule        => '0 0 25 * *',
     job_command         => 'DELETE FROM public.directus_activity WHERE timestamp < NOW() - INTERVAL ''30 DAY''; DELETE FROM timetable.execution_log WHERE last_run < NOW() - INTERVAL ''30 DAY'';',
     job_kind            => 'SQL'::timetable.command_kind,
     job_client_name     => 'scan_tls',
