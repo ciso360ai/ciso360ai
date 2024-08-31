@@ -18,7 +18,7 @@ DECLARE
 BEGIN
     IF (TG_OP = 'INSERT') THEN
         IF NEW.status = 'active' THEN
-            IF NEW.date_updated = NEW.date_created OR OLD.date_updated > NOW() - INTERVAL '30 minutes' THEN
+            IF NEW.date_updated = NEW.date_created OR OLD.date_updated > NOW() - INTERVAL '300 minutes' THEN
                 PERFORM timetable.add_job(
                     job_name            => 'init domain scan ' || NEW.domain,
                     job_schedule        => '* * * * *',

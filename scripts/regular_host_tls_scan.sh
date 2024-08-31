@@ -22,7 +22,7 @@ BEGIN
     IF (TG_OP = 'INSERT') THEN
         IF NEW.status = 'active' THEN
         
-            IF NEW.date_updated = NEW.date_created OR OLD.date_updated > NOW() - INTERVAL '30 minutes' THEN
+            IF NEW.date_updated = NEW.date_created OR OLD.date_updated > NOW() - INTERVAL '300 minutes' THEN
                 PERFORM timetable.add_job(
                     job_name            => 'init TLS host scan ' || NEW.hostname,
                     job_schedule        => '* * * * *',
@@ -55,7 +55,7 @@ BEGIN
         IF NEW.status != OLD.status THEN
             IF NEW.status = 'active' THEN
 
-                IF OLD.date_updated > NOW() - INTERVAL '30 minutes' THEN
+                IF OLD.date_updated > NOW() - INTERVAL '300 minutes' THEN
                     PERFORM timetable.add_job(
                         job_name            => 'init TLS host scan ' || NEW.hostname,
                         job_schedule        => '* * * * *',
