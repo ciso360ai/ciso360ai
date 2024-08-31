@@ -12,6 +12,7 @@ scan(){
             echo msoid.$domain >> exclude.txt
             echo sip.$domain >> exclude.txt
             echo lyncdiscover.$domain >> exclude.txt
+            echo twitter.com >> exclude.txt
         fi
 
     log_activity "scan" "domains" "Started scan on $domain"
@@ -46,7 +47,7 @@ scan(){
     #amass
 	echo -e "\namass scan"
     log_activity "scan" "domains" "amass on $domain"
-    timeout 120 amass enum -silent -passive -timeout 1 -norecursive -nolocaldb -noalts -blf exclude.txt -nf domains.txt -o domains.amass -config /scan_domain/config/amass.ini -d "$domain"
+    timeout $TIMEOUT_LONG amass enum -silent -passive -timeout 1 -norecursive -nolocaldb -noalts -blf exclude.txt -nf domains.txt -o domains.amass -config /scan_domain/config/amass.ini -d "$domain"
        grep -v -f exclude.txt -x domains.amass | anew domains.txt
 
     grep -v $domain -x domains.txt > subdomains.txt

@@ -77,6 +77,8 @@ services:
       PGTT_URL: "postgres://${PG1_USER:-root}:${PG1_PASS}@${PG1_HOST:-postgres}:5432/${PG1_DB}?sslmode=require"
       SERVER_NAME: ${SERVER_NAME:-localhost}
       USER_AGENT: ${USER_AGENT} #TBD
+      TIMEOUT_SHORT: ${TIMEOUT_SHORT:-270}
+      TIMEOUT_LONG: ${TIMEOUT_LONG:-600}
     # command: ["--cron-workers=4"]
     volumes:
       - ./results:/results
@@ -106,6 +108,8 @@ services:
       PGTT_URL: "postgres://${PG1_USER:-root}:${PG1_PASS}@${PG1_HOST:-postgres}:5432/${PG1_DB}?sslmode=require"
       SERVER_NAME: ${SERVER_NAME:-localhost}
       USER_AGENT: ${USER_AGENT} #TBD
+      TIMEOUT_SHORT: ${TIMEOUT_SHORT:-270}
+      TIMEOUT_LONG: ${TIMEOUT_LONG:-600}
     # command: ["--cron-workers=4"]
     volumes:
       - ./results:/results
