@@ -11,8 +11,11 @@ services:
     environment:
       SERVER_NAME: ${SERVER_NAME:-localhost}
       BACKEND: ${BACKEND:-http://api:8055}
+    # command: ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--watch"]
     volumes:
       - caddy_data:/data
+      # - ./Caddyfile:/etc/caddy/Caddyfile
+      # - ./logs/access.log:/var/log/caddy/access.log
     networks:
       - proxy
 
@@ -33,7 +36,8 @@ services:
       - .env
     environment:
       TELEMETRY: "false"
-      # LOGGER_HTTP_USE_LEVEL="silent" # DO NOT log api logs
+      LOGGER_HTTP_USE_LEVEL: "silent" # DO NOT log api logs
+      LOG_LEVEL: "warn"
       DB_CLIENT: "pg"
       DB_CONNECTION_STRING: "postgres://${PG1_USER:-root}:${PG1_PASS}@${PG1_HOST:-postgres}:5432/${PG1_DB}?sslmode=require"
       DB_SEARCH_PATH: public,timetable

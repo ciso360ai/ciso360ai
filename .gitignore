@@ -6,5 +6,5 @@ api/migrations/*.yaml
 !api/migrations/snapshot.yaml
 api/uploads/*
 !api/uploads/ciso360ai_slide.gif
-logs/*.log
+logs
 efs
