@@ -44,6 +44,7 @@ services:
       CACHE_ENABLED: "true"
       CACHE_AUTO_PURGE: "true"
       CACHE_STORE: "redis"
+      CACHE_TTL: "5s"
       REDIS: "redis://cache:6379"
     volumes:
       - ./api/extensions:/directus/extensions
