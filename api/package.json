@@ -15,7 +15,7 @@
   "author": "CISO360AI",
   "license": "MIT",
   "dependencies": {
-    "directus": "10.13.1",
+    "directus": "11.1.2",
     "pg": "^8.10.0"
   },
   "packageManager": "pnpm@9.0.6",
