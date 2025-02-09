@@ -37,7 +37,7 @@ services:
     environment:
       TELEMETRY: "false"
       LOGGER_HTTP_USE_LEVEL: "silent" # DO NOT log api logs
-      LOG_LEVEL: "warn"
+      LOG_LEVEL: "info" #warn
       DB_CLIENT: "pg"
       DB_CONNECTION_STRING: "postgres://${PG1_USER:-root}:${PG1_PASS}@${PG1_HOST:-postgres}:5432/${PG1_DB}?sslmode=require"
       DB_SEARCH_PATH: public,timetable

@@ -8,12 +8,13 @@ INSERT INTO timetable.chain
     ('regular_email_scan','0 0 * * 2', 1, 0, true, false, false, 'scan_email');
 
 INSERT INTO timetable.task 
-    (chain_id, kind, command, task_name, task_order)
+    (chain_id, kind, command, task_name, timeout, task_order)
     VALUES (
         (SELECT chain_id FROM timetable.chain WHERE chain_name = 'regular_email_scan'),
         'PROGRAM'::timetable.command_kind,
         'scan_email_hibp',
         'scan all emails',
+        0,
         COALESCE(10 + (SELECT max(task_order) FROM timetable.task WHERE chain_id = (
                 SELECT chain_id FROM timetable.chain WHERE chain_name = 'regular_email_scan') ), 10)
         );

@@ -1,60 +1,43 @@
-# See: https://github.com/paescuj/jaa/blob/main/directus/Dockerfile
-# FROM node:18-alpine AS build
-
-# WORKDIR /home/app
-# COPY extensions/dev dev
-
-# RUN mkdir out && \
-#     cd dev && \
-#     for dir in */; do \
-#         cd "$dir" && \
-#         npm install && \
-#         npm run build && \
-#         mkdir -p ../../out/$dir && \
-#         mv dist ../../out/$dir &&  \
-#         cd .. \
-#     ; done
-
-# FROM node:16-alpine
-FROM directus/directus:10.13.1
+FROM directus/directus:11.1.1
 
 WORKDIR /directus
 USER root
 
 # disable npm update warnings
-RUN echo "update-notifier=false" >> ~/.npmrc
-RUN apk upgrade --no-cache && \
-    apk add --no-cache \
-    ssmtp tzdata yq python3 build-base py3-setuptools && \
-    ln -sf /usr/bin/python3 /usr/bin/python
+# RUN echo "update-notifier=false" >> ~/.npmrc
+# RUN apk upgrade --no-cache && \
+#     apk add --no-cache \
+#     ssmtp tzdata yq python3 build-base py3-setuptools && \
+#     ln -sf /usr/bin/python3 /usr/bin/python
 
-COPY package.json ./
-
-# ADD ./extensions ./extensions/
 ADD ./migrations ./migrations/
 ADD ./uploads ./uploads/
-# ADD .env ./
-
-# COPY --from=build /home/app/out /tmp/available
 
 # Currently required, check if needed in future release
-RUN corepack enable \
-  && corepack prepare pnpm@8.15.5 --activate \
-  && chown node:node /directus
+# RUN corepack enable \
+#   && corepack prepare pnpm@9.15.3 --activate \
+#   && chown node:node /directus
 
-RUN pnpm install --prefer-offline        
+# RUN npm install --global \
+# 	pm2@5 \
+# 	corepack@latest # Remove again once corepack >= 0.31 made it into base image
 
 EXPOSE 8055
 
+# CMD : \
+# 	&& node cli.js bootstrap \
+# 	&& pm2-runtime start ecosystem.config.cjs \
+# 	;
+
 # CMD npx directus bootstrap --skipAdminInit && \
 CMD echo "Starting CISO360.AI ..." && \
-    npx directus bootstrap && \
+    node cli.js bootstrap && \
     # cp -r /tmp/available/* /directus/extensions/available/ && \
 ## Add another user
     # role=$(npx directus roles create --role Admin2 --admin true | grep -v '✨') && \
     # npx directus users create --email "$ADMIN2_EMAIL" --password "$ADMIN2_PASSWORD" --role "$role" && \
     # echo "$(date +%T) ✨ Admin2 user created successfully" && \
 ## Restore snapshot and migrate to latest
-    npx directus schema apply /directus/migrations/snapshot.yaml -y && \
-    npx directus database migrate:latest && \
-    npx directus start
+    node cli.js schema apply /directus/migrations/snapshot.yaml -y && \
+    node cli.js database migrate:latest && \
+    node cli.js start

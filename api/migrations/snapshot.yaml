@@ -1,5 +1,5 @@
 version: 1
-directus: 10.13.1
+directus: 11.1.1
 vendor: postgres
 collections:
   - collection: actions
@@ -1375,18 +1375,18 @@ fields:
       display: labels
       display_options:
         choices:
-          - text: to do
-            value: to do
+          - background: '#D3DAE4'
             foreground: '#18222F'
-            background: '#D3DAE4'
-          - text: in progress
+            text: to do
+            value: to do
+          - background: var(--primary)
+            foreground: '#FFFFFF'
+            text: in progress
             value: in progress
+          - background: '#2ECDA7'
             foreground: '#FFFFFF'
-            background: var(--primary)
-          - text: done
+            text: done
             value: done
-            foreground: '#FFFFFF'
-            background: '#2ECDA7'
         format: false
       field: status
       group: null
@@ -1886,21 +1886,21 @@ fields:
       display: labels
       display_options:
         choices:
-          - text: $t:published
-            value: published
+          - background: var(--theme--primary-background)
             color: var(--theme--primary)
             foreground: var(--theme--primary)
-            background: var(--theme--primary-background)
-          - text: $t:draft
-            value: draft
+            text: $t:published
+            value: published
+          - background: var(--theme--background-normal)
             color: var(--theme--foreground)
             foreground: var(--theme--foreground)
-            background: var(--theme--background-normal)
-          - text: $t:archived
-            value: archived
+            text: $t:draft
+            value: draft
+          - background: var(--theme--warning-background)
             color: var(--theme--warning)
             foreground: var(--theme--warning)
-            background: var(--theme--warning-background)
+            text: $t:archived
+            value: archived
         showAsDot: true
       field: status
       group: null
@@ -1909,15 +1909,15 @@ fields:
       note: null
       options:
         choices:
-          - text: $t:published
+          - color: var(--theme--primary)
+            text: $t:published
             value: published
-            color: var(--theme--primary)
-          - text: $t:draft
+          - color: var(--theme--foreground)
+            text: $t:draft
             value: draft
-            color: var(--theme--foreground)
-          - text: $t:archived
+          - color: var(--theme--warning)
+            text: $t:archived
             value: archived
-            color: var(--theme--warning)
       readonly: false
       required: false
       sort: 3
@@ -3240,18 +3240,18 @@ fields:
       display: labels
       display_options:
         choices:
-          - text: $t:published
+          - background: var(--primary)
+            foreground: '#FFFFFF'
+            text: $t:published
             value: published
-            foreground: '#FFFFFF'
-            background: var(--primary)
-          - text: $t:draft
-            value: draft
+          - background: '#D3DAE4'
             foreground: '#18222F'
-            background: '#D3DAE4'
-          - text: $t:archived
-            value: archived
+            text: $t:draft
+            value: draft
+          - background: var(--warning)
             foreground: '#FFFFFF'
-            background: var(--warning)
+            text: $t:archived
+            value: archived
         showAsDot: true
       field: status
       group: null
@@ -4052,26 +4052,26 @@ fields:
       display: labels
       display_options:
         choices:
-          - text: not implemented
+          - background: '#E35169'
+            foreground: '#FFFFFF'
+            text: not implemented
             value: not implemented
+          - background: '#3399FF'
             foreground: '#FFFFFF'
-            background: '#E35169'
-          - text: planned
+            text: planned
             value: planned
-            foreground: '#FFFFFF'
-            background: '#3399FF'
-          - text: partial implemented
-            value: partial implemented
+          - background: '#FFC23B'
             foreground: '#18222F'
-            background: '#FFC23B'
-          - text: fully implemented
-            value: fully implemented
+            text: partial implemented
+            value: partial implemented
+          - background: '#2ECDA7'
             foreground: '#FFFFFF'
-            background: '#2ECDA7'
-          - text: decommissioned
-            value: decommissioned
+            text: fully implemented
+            value: fully implemented
+          - background: '#18222F'
             foreground: '#A2B5CD'
-            background: '#18222F'
+            text: decommissioned
+            value: decommissioned
       field: status
       group: null
       hidden: false
@@ -5201,14 +5201,14 @@ fields:
       display: labels
       display_options:
         choices:
-          - text: null
+          - background: '#2ECDA7'
+            foreground: null
+            text: null
             value: active
+          - background: '#A2B5CD'
             foreground: null
-            background: '#2ECDA7'
-          - text: null
+            text: null
             value: inactive
-            foreground: null
-            background: '#A2B5CD'
         showAsDot: true
       field: status
       group: null
@@ -5629,13 +5629,13 @@ fields:
     meta:
       collection: domains
       conditions:
-        - name: hide on new entry
+        - hidden: true
+          name: hide on new entry
+          options: {}
           rule:
             _and:
               - date_created:
                   _eq: CURRENT_TIMESTAMP
-          hidden: true
-          options: {}
       display: null
       display_options: null
       field: scan_domain
@@ -5645,8 +5645,8 @@ fields:
       note: Authorisation required!
       options:
         links:
-          - label: rescan
-            icon: autorenew
+          - icon: autorenew
+            label: rescan
             type: info
             url: ../rescan/domain/{{domain}}
       readonly: false
@@ -5668,10 +5668,10 @@ fields:
       display: labels
       display_options:
         choices:
-          - value: active
-            background: '#00C897'
-          - value: inactive
-            background: '#C7C7C7'
+          - background: '#00C897'
+            value: active
+          - background: '#C7C7C7'
+            value: inactive
         showAsDot: true
       field: status
       group: null
@@ -5838,16 +5838,16 @@ fields:
       display: labels
       display_options:
         choices:
-          - text: active
-            value: active
+          - background: var(--theme--primary-background)
             color: var(--theme--primary)
             foreground: null
-            background: var(--theme--primary-background)
-          - text: inactive
-            value: inactive
+            text: active
+            value: active
+          - background: var(--theme--warning-background)
             color: '#A2B5CD'
             foreground: null
-            background: var(--theme--warning-background)
+            text: inactive
+            value: inactive
         showAsDot: true
       field: status
       group: null
@@ -5856,12 +5856,12 @@ fields:
       note: null
       options:
         choices:
-          - text: active
+          - color: var(--theme--primary)
+            text: active
             value: active
-            color: var(--theme--primary)
-          - text: inactive
+          - color: '#A2B5CD'
+            text: inactive
             value: inactive
-            color: '#A2B5CD'
       readonly: false
       required: false
       sort: 4
@@ -6947,18 +6947,18 @@ fields:
       display: labels
       display_options:
         choices:
-          - text: $t:published
+          - background: var(--primary)
+            foreground: '#FFFFFF'
+            text: $t:published
             value: published
-            foreground: '#FFFFFF'
-            background: var(--primary)
-          - text: $t:draft
-            value: draft
+          - background: '#D3DAE4'
             foreground: '#18222F'
-            background: '#D3DAE4'
-          - text: $t:archived
-            value: archived
+            text: $t:draft
+            value: draft
+          - background: var(--warning)
             foreground: '#FFFFFF'
-            background: var(--warning)
+            text: $t:archived
+            value: archived
         showAsDot: true
       field: status
       group: null
@@ -7405,13 +7405,13 @@ fields:
     meta:
       collection: hosts
       conditions:
-        - name: hide on new entry
+        - hidden: true
+          name: hide on new entry
+          options: {}
           rule:
             _and:
               - date_created:
                   _eq: CURRENT_TIMESTAMP
-          hidden: true
-          options: {}
       display: null
       display_options: null
       field: scan_host
@@ -7421,8 +7421,8 @@ fields:
       note: Authorisation required!
       options:
         links:
-          - label: rescan
-            icon: autorenew
+          - icon: autorenew
+            label: rescan
             type: info
             url: ../rescan/host/{{hostname}}
       readonly: false
@@ -7484,10 +7484,10 @@ fields:
       display: labels
       display_options:
         choices:
-          - value: active
-            background: '#00C897'
-          - value: inactive
-            background: '#C7C7C7'
+          - background: '#00C897'
+            value: active
+          - background: '#C7C7C7'
+            value: inactive
         showAsDot: true
       field: status
       group: null
@@ -8025,13 +8025,13 @@ fields:
     meta:
       collection: ips
       conditions:
-        - name: hide on new entry
+        - hidden: true
+          name: hide on new entry
+          options: {}
           rule:
             _and:
               - date_created:
                   _eq: CURRENT_TIMESTAMP
-          hidden: true
-          options: {}
       display: null
       display_options: null
       field: scan_ip
@@ -8041,8 +8041,8 @@ fields:
       note: Authorisation required!
       options:
         links:
-          - label: rescan
-            icon: autorenew
+          - icon: autorenew
+            label: rescan
             type: info
             url: ../rescan/ip/{{ip}}
       readonly: false
@@ -8064,10 +8064,10 @@ fields:
       display: labels
       display_options:
         choices:
-          - value: active
-            background: '#00C897'
-          - value: inactive
-            background: '#BFBFBF'
+          - background: '#00C897'
+            value: active
+          - background: '#BFBFBF'
+            value: inactive
         showAsDot: true
       field: status
       group: null
@@ -8559,8 +8559,8 @@ fields:
           - background: var(--primary)
             value: active
           - background: var(--warning)
-            value: inactive
             text: null
+            value: inactive
         showAsDot: true
       field: status
       group: null
@@ -9222,10 +9222,10 @@ fields:
       display: labels
       display_options:
         choices:
-          - value: inactive
-            background: '#C7C7C7'
-          - value: active
-            background: '#00C897'
+          - background: '#C7C7C7'
+            value: inactive
+          - background: '#00C897'
+            value: active
         showAsDot: true
       field: status
       group: null
@@ -9672,26 +9672,26 @@ fields:
       display: formatted-value
       display_options:
         conditionalFormatting:
-          - operator: eq
-            value: 1
-            color: '#3399FF'
+          - color: '#3399FF'
+            operator: eq
             text: 1 - Minimal
-          - operator: eq
-            value: 2
-            color: '#2ECDA7'
+            value: 1
+          - color: '#2ECDA7'
+            operator: eq
             text: 2 - Minor
-          - operator: eq
-            value: 3
-            color: '#FFC23B'
+            value: 2
+          - color: '#FFC23B'
+            operator: eq
             text: 3 - Moderate
-          - operator: eq
-            value: 4
-            color: '#E35169'
+            value: 3
+          - color: '#E35169'
+            operator: eq
             text: 4 - Significant
-          - operator: eq
-            value: 5
-            color: '#BF4545'
+            value: 4
+          - color: '#BF4545'
+            operator: eq
             text: 5 - Catastrophic
+            value: 5
         italic: true
       field: impact
       group: null
@@ -9747,30 +9747,30 @@ fields:
       display_options:
         bold: true
         conditionalFormatting:
-          - operator: lte
-            value: 2
-            color: '#3399FF'
+          - color: '#3399FF'
+            operator: lte
             text: INFO
-          - operator: gte
+            value: 2
+          - color: '#2ECDA7'
+            operator: gte
+            text: LOW
             value: 3
-            color: '#2ECDA7'
+          - color: '#2ECDA7'
+            operator: eq
             text: LOW
-          - operator: eq
             value: 4
-            color: '#2ECDA7'
-            text: LOW
-          - operator: gte
-            value: 5
-            color: '#FFC23B'
+          - color: '#FFC23B'
+            operator: gte
             text: MEDIUM
-          - operator: gte
-            value: 10
-            color: '#E35169'
+            value: 5
+          - color: '#E35169'
+            operator: gte
             text: HIGH
-          - operator: gte
-            value: 16
-            color: '#BA122E'
+            value: 10
+          - color: '#BA122E'
+            operator: gte
             text: CRITICAL
+            value: 16
         icon: null
       field: level
       group: null
@@ -9842,26 +9842,26 @@ fields:
       display: formatted-value
       display_options:
         conditionalFormatting:
-          - operator: eq
-            value: 1
-            color: '#3399FF'
+          - color: '#3399FF'
+            operator: eq
             text: 1 - Almost never
-          - operator: eq
-            value: 2
-            color: '#2ECDA7'
+            value: 1
+          - color: '#2ECDA7'
+            operator: eq
             text: 2 - Possible but unlikely
-          - operator: eq
-            value: 3
-            color: '#FFC23B'
+            value: 2
+          - color: '#FFC23B'
+            operator: eq
             text: 3 - Possible
-          - operator: eq
-            value: 4
-            color: '#FFA439'
+            value: 3
+          - color: '#FFA439'
+            operator: eq
             text: 4 - Highly likely
-          - operator: eq
-            value: 5
-            color: '#E35169'
+            value: 4
+          - color: '#E35169'
+            operator: eq
             text: 5 - Almost certain
+            value: 5
         italic: true
       field: likelihood
       group: null
@@ -10017,26 +10017,26 @@ fields:
       display: labels
       display_options:
         choices:
-          - text: not assessed
+          - background: '#FFC23B'
+            foreground: '#FFFFFF'
+            text: not assessed
             value: not assessed
+          - background: var(--primary)
             foreground: '#FFFFFF'
-            background: '#FFC23B'
-          - text: avoided
+            text: avoided
             value: avoided
+          - background: '#2ECDA7'
             foreground: '#FFFFFF'
-            background: var(--primary)
-          - text: mitigated
+            text: mitigated
             value: mitigated
+          - background: '#18222F'
             foreground: '#FFFFFF'
-            background: '#2ECDA7'
-          - text: transferred
+            text: transferred
             value: transferred
+          - background: '#E35169'
             foreground: '#FFFFFF'
-            background: '#18222F'
-          - text: accepted
+            text: accepted
             value: accepted
-            foreground: '#FFFFFF'
-            background: '#E35169'
       field: status
       group: null
       hidden: false
@@ -11711,10 +11711,10 @@ fields:
       display: labels
       display_options:
         choices:
-          - value: inactive
-            background: '#CFCFCF'
-          - value: active
-            background: '#00C897'
+          - background: '#CFCFCF'
+            value: inactive
+          - background: '#00C897'
+            value: active
         showAsDot: true
       field: status
       group: null
@@ -12100,18 +12100,18 @@ fields:
       display: labels
       display_options:
         choices:
-          - text: $t:published
+          - background: var(--primary)
+            foreground: '#FFFFFF'
+            text: $t:published
             value: published
-            foreground: '#FFFFFF'
-            background: var(--primary)
-          - text: $t:draft
-            value: draft
+          - background: '#D3DAE4'
             foreground: '#18222F'
-            background: '#D3DAE4'
-          - text: $t:archived
-            value: archived
+            text: $t:draft
+            value: draft
+          - background: var(--warning)
             foreground: '#FFFFFF'
-            background: var(--warning)
+            text: $t:archived
+            value: archived
         showAsDot: true
       field: status
       group: null
@@ -12807,32 +12807,32 @@ fields:
       display: formatted-value
       display_options:
         conditionalFormatting:
-          - operator: eq
-            value: 1
+          - background: '#3399FF'
             color: '#FFFFFF'
-            background: '#3399FF'
             icon: null
+            operator: eq
             text: INFO
-          - operator: eq
-            value: 2
+            value: 1
+          - background: '#2ECDA7'
             color: '#FFFFFF'
-            background: '#2ECDA7'
+            operator: eq
             text: LOW
-          - operator: eq
-            value: 3
+            value: 2
+          - background: '#FFC23B'
             color: '#FFFFFF'
-            background: '#FFC23B'
+            operator: eq
             text: MEDIUM
-          - operator: eq
-            value: 4
+            value: 3
+          - background: '#E35169'
             color: '#FFFFFF'
-            background: '#E35169'
+            operator: eq
             text: HIGH
-          - operator: eq
-            value: 5
+            value: 4
+          - background: '#850016'
             color: '#FFFFFF'
-            background: '#850016'
+            operator: eq
             text: CRTICAL
+            value: 5
       field: severity
       group: null
       hidden: false
@@ -12884,12 +12884,12 @@ fields:
       display: labels
       display_options:
         choices:
-          - value: active
-            background: '#00C897'
-          - value: inactive
-            background: '#A2B5CD'
-          - value: refind
-            background: '#DBDD64'
+          - background: '#00C897'
+            value: active
+          - background: '#A2B5CD'
+            value: inactive
+          - background: '#DBDD64'
+            value: refind
         showAsDot: true
       field: status
       group: null

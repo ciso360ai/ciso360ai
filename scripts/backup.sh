@@ -1,22 +1,22 @@
 #!/bin/bash
 
 #cd /opt/cyberscan_api/backup
-docker exec -i postgres /bin/bash -c "PGPASSWORD=XXX pg_dump -c -C -x -s --column-inserts --no-comments --username \$POSTGRES_USER \$POSTGRES_DB > /backup/schema-$(date '+%y%m%d_%H%M').sql && \
-PGPASSWORD=XXX pg_dump -c -C -x --column-inserts --no-comments --username \$POSTGRES_USER \$POSTGRES_DB > /backup/full-$(date '+%y%m%d_%H%M').sql && \
-PGPASSWORD=XXX pg_dump -c -C -x --column-inserts --exclude-table-data '*.directus*' --no-comments --username \$POSTGRES_USER \$POSTGRES_DB > /backup/full_nodirectus-$(date '+%y%m%d_%H%M').sql && \
-PGPASSWORD=XXX pg_dump -C -x -a --column-inserts --no-comments --username \$POSTGRES_USER \$POSTGRES_DB > /backup/data-$(date '+%y%m%d_%H%M').sql && \
-PGPASSWORD=XXX pg_dump -C -x -a --column-inserts --exclude-table-data '*.directus*' --no-comments --username \$POSTGRES_USER \$POSTGRES_DB > /backup/data_nodirectus-$(date '+%y%m%d_%H%M').sql
-PGPASSWORD=XXX pg_dumpall -U \$POSTGRES_USER > /backup/all.sql
+docker exec -i postgres /bin/bash -c "pg_dump -c -C -x -s --column-inserts --no-comments --username \$POSTGRES_USER \$POSTGRES_DB > /backup/schema-$(date '+%y%m%d_%H%M').sql && \
+pg_dump -c -C -x --column-inserts --no-comments --username \$POSTGRES_USER \$POSTGRES_DB > /backup/full-$(date '+%y%m%d_%H%M').sql && \
+pg_dump -c -C -x --column-inserts --exclude-table-data '*.directus*' --no-comments --username \$POSTGRES_USER \$POSTGRES_DB > /backup/full_nodirectus-$(date '+%y%m%d_%H%M').sql && \
+pg_dump -C -x -a --column-inserts --no-comments --username \$POSTGRES_USER \$POSTGRES_DB > /backup/data-$(date '+%y%m%d_%H%M').sql && \
+pg_dump -C -x -a --column-inserts --exclude-table-data '*.directus*' --no-comments --username \$POSTGRES_USER \$POSTGRES_DB > /backup/data_nodirectus-$(date '+%y%m%d_%H%M').sql
+pg_dumpall -U \$POSTGRES_USER > /backup/all.sql
 chmod 777 /backup/*.sql
 "
 
 #sudo chown ubuntu:ubuntu /backup/*.sql
 
-docker exec -i api /bin/sh -c "chown -R node:node /directus/migrations && npx directus schema snapshot --yes /directus/migrations/\$(date +%F)\-snapshot-\$(date +%s)\.yaml"
+docker exec -i api /bin/sh -c "chown -R node:node /directus/migrations && node cli.js schema snapshot --yes /directus/migrations/\$(date +%F)\-snapshot-\$(date +%s)\.yaml"
 
-#docker exec -i directus /bin/sh -c "npx directus schema apply --yes /directus/migrations/snapshot.yaml"
+#docker exec -i directus /bin/sh -c "node cli.js schema apply --yes /directus/migrations/snapshot.yaml"
 
-docker exec -i postgres /bin/bash -c "PGPASSWORD=XXX pg_dump --data-only --blobs --no-privileges --disable-triggers --inserts --on-conflict-do-nothing --quote-all-identifiers --no-comments \
+docker exec -i postgres /bin/bash -c "pg_dump --data-only --blobs --no-privileges --disable-triggers --inserts --on-conflict-do-nothing --quote-all-identifiers --no-comments \
   -t public.directus_roles \
   -t public.directus_users \
   -t public.organisations \
