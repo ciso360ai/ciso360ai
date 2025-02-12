@@ -7,12 +7,13 @@ INSERT INTO timetable.chain
     VALUES 
     ('regular_domain_hibp_scan','0 0 * * 1', 1, 0, true, false, false, 'scan_email');
 
-INSERT INTO timetable.task (chain_id, kind, command, task_name, task_order)
+INSERT INTO timetable.task (chain_id, kind, command, task_name, timeout, task_order)
 VALUES (
 (SELECT chain_id FROM timetable.chain WHERE chain_name = 'regular_domain_hibp_scan'),
 'PROGRAM'::timetable.command_kind,
 'scan_domain_hibp',
 'scan all domains',
+0,
 COALESCE(10 + (SELECT max(task_order) FROM timetable.task WHERE chain_id = (
         SELECT chain_id FROM timetable.chain WHERE chain_name = 'regular_domain_hibp_scan') ), 10)
 );    

@@ -9,7 +9,7 @@ scan(){
     mkdir -p /results/$target
     cd /results/$target
 
-    log_activity "scan" "TLS" "Start scan on $target"
+    log_activity "scan" "TLS" #"Started scan on $target"
 
     echo -e "\nTestSSL scan"
     timeout $TIMEOUT_SHORT testssl --ip one --ids-friendly -oJ /results/$target/testssl.json --overwrite $target
@@ -18,7 +18,7 @@ scan(){
 
     cd /results
     echo -e "\nEnumStop"
-    log_activity "scan" "TLS" "Finished scan on $target"
+    log_activity "scan" "TLS" #"Finished scan on $target"
 }
 
 scan $1 >> /proc/1/fd/1

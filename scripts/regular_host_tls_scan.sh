@@ -37,12 +37,13 @@ BEGIN
                 );
             END IF;
 
-            INSERT INTO timetable.task (chain_id, kind, command, task_name, task_order)
+            INSERT INTO timetable.task (chain_id, kind, command, task_name, timeout, task_order)
                 VALUES (
                     (SELECT chain_id FROM timetable.chain WHERE chain_name = 'regular_host_tls_scan'),
                     'PROGRAM'::timetable.command_kind,
                     'scan_tls',
                     NEW.hostname,
+                    0,
                     COALESCE(10 + (SELECT max(task_order) FROM timetable.task WHERE chain_id = (
                             SELECT chain_id FROM timetable.chain WHERE chain_name = 'regular_host_tls_scan') ), 10)
                     )
@@ -70,12 +71,13 @@ BEGIN
                     );
                 END IF;
 
-                INSERT INTO timetable.task (chain_id, kind, command, task_name, task_order)
+                INSERT INTO timetable.task (chain_id, kind, command, task_name, timeout, task_order)
                     VALUES (
                         (SELECT chain_id FROM timetable.chain WHERE chain_name = 'regular_host_tls_scan'),
                         'PROGRAM'::timetable.command_kind,
                         'scan_tls',
                         NEW.hostname,
+                        0,
                         COALESCE(10 + (SELECT max(task_order) FROM timetable.task WHERE chain_id = (
                                 SELECT chain_id FROM timetable.chain WHERE chain_name = 'regular_host_tls_scan') ), 10)
                         )

@@ -83,21 +83,28 @@ INSERT INTO organisations (id, status, user_created, date_created, user_updated,
 
 INSERT INTO organisations_directus_users (id, directus_users_id, organisations_id) VALUES (1, 'ca4d7676-f94d-4561-a84f-4db18fba6d21', 1);
 
---- DEMOuser role
-INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'organisations', 'read', '{\"_and\":[{\"users\":{\"directus_users_id\":{\"id\":{\"_eq\":\"\\\$CURRENT_USER\"}}}}]}', '{}', NULL, '*');
-INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'vulnerabilities', 'read', '{\"_and\":[{\"domain_id\":{\"organisations\":{\"users\":{\"directus_users_id\":{\"id\":{\"_eq\":\"\\\$CURRENT_USER\"}}}}}}]}', NULL, NULL, 'id,summary,severity,details,tags,links,domain_id,hostname_id,ip_id,port_id,verified,user_created,user_updated,date_created,date_updated,status,scans');
-INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'ips', 'read', '{\"_and\":[{\"hosts\":{\"hostname_id\":{\"domain_id\":{\"organisations\":{\"users\":{\"directus_users_id\":{\"id\":{\"_eq\":\"\\\$CURRENT_USER\"}}}}}}}}]}', NULL, NULL, 'id,scan_ip,ip,user_created,scan_id,status,user_updated,date_created,hosts,date_updated');
-INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'ports', 'read', NULL, NULL, NULL, 'id,port,status,user_updated,user_created,date_updated,date_created,scan_id,hosts');
-INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'scans', 'read', '{\"_and\":[{\"domain_id\":{\"organisations\":{\"users\":{\"directus_users_id\":{\"id\":{\"_eq\":\"\\\$CURRENT_USER\"}}}}}}]}', NULL, NULL, 'id,domain_id,date_created,user_created,date_updated,user_updated,vulnerabilities');
-INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'hosts_ips', 'read', '{}', '{}', NULL, '*');
-INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'hosts_ports', 'read', '{}', '{}', NULL, '*');
-INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'hosts', 'read', '{\"_and\":[{\"domain_id\":{\"organisations\":{\"users\":{\"directus_users_id\":{\"id\":{\"_eq\":\"\\\$CURRENT_USER\"}}}}}}]}', NULL, NULL, 'id,scan_host,hostname,inscope,status,domain_id,user_created,scan_id,user_updated,ips,date_updated,date_created,ports');
-INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ( 'fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'scans_vulnerabilities', 'read', '{}', '{}', NULL, '*');
-INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ( 'fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'organisations_directus_users', 'read', '{}', '{}', NULL, '*');
-INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ( 'fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'urls', 'read', '{\"_and\":[{\"hostname_id\":{\"domain_id\":{\"organisations\":{\"users\":{\"directus_users_id\":{\"id\":{\"_eq\":\"\\\$CURRENT_USER\"}}}}}}}]}', NULL, NULL, 'id,url,hostname_id,user_created,scan_id,status,user_updated,date_created,date_updated');
-INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ( 'fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'directus_panels', 'read', '{}', '{}', NULL, '*');
-INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ( 'fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'directus_dashboards', 'read', '{}', '{}', NULL, '*');
-INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'directus_files', 'read', '{}', NULL, NULL, '*');
+--- DEMOuser policy 7a8cecea-c679-4eab-9e34-6f84e7487c5a
+
+INSERT INTO public.directus_permissions (collection, action, permissions, validation, presets, fields, policy) VALUES ('domains', 'read', NULL, NULL, NULL, '*', '7a8cecea-c679-4eab-9e34-6f84e7487c5a');
+INSERT INTO public.directus_permissions (collection, action, permissions, validation, presets, fields, policy) VALUES ('ports', 'read', NULL, NULL, NULL, '*', '7a8cecea-c679-4eab-9e34-6f84e7487c5a');
+INSERT INTO public.directus_permissions (collection, action, permissions, validation, presets, fields, policy) VALUES ('hosts_ips', 'read', NULL, NULL, NULL, '*', '7a8cecea-c679-4eab-9e34-6f84e7487c5a');
+INSERT INTO public.directus_permissions (collection, action, permissions, validation, presets, fields, policy) VALUES ('hosts_ports', 'read', NULL, NULL, NULL, '*', '7a8cecea-c679-4eab-9e34-6f84e7487c5a');
+INSERT INTO public.directus_permissions (collection, action, permissions, validation, presets, fields, policy) VALUES ('directus_panels', 'read', NULL, NULL, NULL, '*', '7a8cecea-c679-4eab-9e34-6f84e7487c5a');
+INSERT INTO public.directus_permissions (collection, action, permissions, validation, presets, fields, policy) VALUES ('directus_dashboards', 'read', NULL, NULL, NULL, '*', '7a8cecea-c679-4eab-9e34-6f84e7487c5a');
+INSERT INTO public.directus_permissions (collection, action, permissions, validation, presets, fields, policy) VALUES ('directus_files', 'read', NULL, NULL, NULL, '*', '7a8cecea-c679-4eab-9e34-6f84e7487c5a');
+INSERT INTO public.directus_permissions (collection, action, permissions, validation, presets, fields, policy) VALUES ('scans_vulnerabilities', 'read', NULL, NULL, NULL, '*', '7a8cecea-c679-4eab-9e34-6f84e7487c5a');
+INSERT INTO public.directus_permissions (collection, action, permissions, validation, presets, fields, policy) VALUES ('organisations_directus_users', 'read', NULL, NULL, NULL, '*', '7a8cecea-c679-4eab-9e34-6f84e7487c5a');
+
+INSERT INTO public.directus_permissions (collection, action, permissions, validation, presets, fields, policy) VALUES ('hosts', 'read', '{\"_and\":[{\"domain_id\":{\"organisations\":{\"users\":{\"directus_users_id\":{\"id\":{\"_eq\":\"\\\$CURRENT_USER\"}}}}}}]}', NULL, NULL, 'id,scan_host,hostname,inscope,status,domain_id,scan_id,user_created,date_created,date_updated,ips,ports,user_updated', '7a8cecea-c679-4eab-9e34-6f84e7487c5a');
+--- INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'organisations', 'read', '{\"_and\":[{\"users\":{\"directus_users_id\":{\"id\":{\"_eq\":\"\\\$CURRENT_USER\"}}}}]}', '{}', NULL, '*');
+
+--- INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'vulnerabilities', 'read', '{\"_and\":[{\"domain_id\":{\"organisations\":{\"users\":{\"directus_users_id\":{\"id\":{\"_eq\":\"\\\$CURRENT_USER\"}}}}}}]}', NULL, NULL, 'id,summary,severity,details,tags,links,domain_id,hostname_id,ip_id,port_id,verified,user_created,user_updated,date_created,date_updated,status,scans');
+--- INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'ips', 'read', '{\"_and\":[{\"hosts\":{\"hostname_id\":{\"domain_id\":{\"organisations\":{\"users\":{\"directus_users_id\":{\"id\":{\"_eq\":\"\\\$CURRENT_USER\"}}}}}}}}]}', NULL, NULL, 'id,scan_ip,ip,user_created,scan_id,status,user_updated,date_created,hosts,date_updated');
+--- INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'scans', 'read', '{\"_and\":[{\"domain_id\":{\"organisations\":{\"users\":{\"directus_users_id\":{\"id\":{\"_eq\":\"\\\$CURRENT_USER\"}}}}}}]}', NULL, NULL, 'id,domain_id,date_created,user_created,date_updated,user_updated,vulnerabilities');
+
+
+--- INSERT INTO directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ( 'fb9a9ff6-f729-481f-9c27-f152f30d4daa', 'urls', 'read', '{\"_and\":[{\"hostname_id\":{\"domain_id\":{\"organisations\":{\"users\":{\"directus_users_id\":{\"id\":{\"_eq\":\"\\\$CURRENT_USER\"}}}}}}}]}', NULL, NULL, 'id,url,hostname_id,user_created,scan_id,status,user_updated,date_created,date_updated');
+
 
 EOF"
 
@@ -106,12 +113,12 @@ docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 
 --- SYS Import
 
-INSERT INTO public.directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('5c6128e5-75d0-4dd1-9e13-f47bb6b3467c', 'devices', 'create', '{}', '{}', NULL, '*');
-INSERT INTO public.directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('5c6128e5-75d0-4dd1-9e13-f47bb6b3467c', 'devices', 'update', '{}', '{}', NULL, '*');
+--- INSERT INTO public.directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('5c6128e5-75d0-4dd1-9e13-f47bb6b3467c', 'devices', 'create', '{}', '{}', NULL, '*');
+--- INSERT INTO public.directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('5c6128e5-75d0-4dd1-9e13-f47bb6b3467c', 'devices', 'update', '{}', '{}', NULL, '*');
 
 --- SYS Images
 
-INSERT INTO public.directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('0202a11b-1614-46b9-b73f-e53a7a765186', 'directus_files', 'read', '{}', '{}', NULL, '*');
+--- INSERT INTO public.directus_permissions (role, collection, action, permissions, validation, presets, fields) VALUES ('0202a11b-1614-46b9-b73f-e53a7a765186', 'directus_files', 'read', '{}', '{}', NULL, '*');
 
 EOF"
 
