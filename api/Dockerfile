@@ -1,4 +1,4 @@
-FROM directus/directus:11.1.2
+FROM directus/directus:11.4.1
 
 WORKDIR /directus
 USER root
@@ -18,9 +18,9 @@ ADD ./uploads ./uploads/
 #   && corepack prepare pnpm@9.15.3 --activate \
 #   && chown node:node /directus
 
-# RUN npm install --global \
-# 	pm2@5 \
-# 	corepack@latest # Remove again once corepack >= 0.31 made it into base image
+RUN npm install --global \
+	pm2@5 \
+	corepack@latest # Remove again once corepack >= 0.31 made it into base image
 
 EXPOSE 8055
 
@@ -40,4 +40,4 @@ CMD echo "Starting CISO360.AI ..." && \
 ## Restore snapshot and migrate to latest
     node cli.js schema apply /directus/migrations/snapshot.yaml -y && \
     node cli.js database migrate:latest && \
-    node cli.js start
+    pm2-runtime start ecosystem.config.cjs
