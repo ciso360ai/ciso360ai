@@ -7,11 +7,7 @@ import psycopg2
 action = sys.argv[1]
 collection = sys.argv[2]
 if len(sys.argv) > 3:
-    comment = sys.argv[3]
-else:
-    comment = None
-if len(sys.argv) > 4:
-    item = sys.argv[4]
+    item = sys.argv[3]
 else:
     item = 0
 
@@ -19,7 +15,7 @@ conn = psycopg2.connect(os.environ['PGTT_URL'])
 conn.autocommit = True
 cursor = conn.cursor()
 
-add_domain = '''INSERT into directus_activity (action,collection,comment,item) VALUES ( %s, %s, %s, %s) ON CONFLICT DO NOTHING'''
-cursor.execute(add_domain, (action,collection,comment,item,))
+add_log = '''INSERT into directus_activity (action,collection,item) VALUES ( %s, %s, %s) ON CONFLICT DO NOTHING'''
+cursor.execute(add_log, (action,collection,item,))
 
 conn.close()
