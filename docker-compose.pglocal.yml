@@ -1,7 +1,7 @@
 services:
 
   postgres:
-    image: postgres:17.2
+    image: postgres:17.4
     container_name: postgres
     restart: always
     healthcheck:
