@@ -16,6 +16,6 @@
 		"build": "directus-extension build"
 	},
 	"devDependencies": {
-		"@directus/extensions-sdk": "11.0.8"
+		"@directus/extensions-sdk": "13.0.2"
 	}
 }
