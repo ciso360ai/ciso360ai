@@ -12,7 +12,7 @@ scan(){
     log_activity "scan" "TLS" #"Started scan on $target"
 
     echo -e "\nTestSSL scan"
-    timeout $TIMEOUT_SHORT testssl --ip one --ids-friendly -oJ /results/$target/testssl.json --overwrite $target
+    timeout $TIMEOUT_SHORT testssl --quiet --sneaky --ip one --connect-timeout 2 --openssl-timeout 2 -p -s -S -U -oJ /results/$target/testssl.json --overwrite $target
 
     import_scan $target
 

@@ -54,35 +54,46 @@ ip = parsed_json['scanResult'][0]['ip']
 hostname = parsed_json['scanResult'][0]['targetHost']
 port = parsed_json['scanResult'][0]['port']
 vulnerabilities = parsed_json['scanResult'][0]['vulnerabilities']
+protocols = parsed_json['scanResult'][0]['protocols']
+ciphers = parsed_json['scanResult'][0]['ciphers']
 
-summary = "SSL/TLS vulnerabilties"
-severity = 1
+vuln_summary = "SSL/TLS vulnerabilties"
+prot_summary = 'Insecure protocols'
+ciph_summary = 'Insecure ciphers' #TBD
 
-details = ''
-details += '<table>'
-details += '<tr><th>Vuln</th><th>Severity</th><th>Finding</th></tr>'
-for finding in vulnerabilities:
-    details += '<tr>'
-    details += '<td>' + finding['id'] + '</td>'
-    details += '<td>' + finding['severity'] + '</td>'
-    details += '<td>' + finding['finding'] + '</td>'
-    # if 'cve' in finding:
-    #     details += '<td>' + '<a href="https://nvd.nist.gov/vuln/detail/' + finding['cve'] + '">' + finding['cve'] + '</a>' + '</td>'
-    # else:
-    #     details += '<td>-</td>'
-    details += '</tr>'
+vuln_sev = 1
+prot_sev = 1
+ciph_sev = 1
 
+vuln_info = ''
+vuln_info += '<table>'
+vuln_info += '<tr><th>Vuln</th><th>Severity</th><th>Finding</th></tr>'
+for info in vulnerabilities:
+    vuln_info += '<tr>'
+    vuln_info += '<td>' + info['id'] + '</td>'
+    vuln_info += '<td>' + info['severity'] + '</td>'
+    vuln_info += '<td>' + info['finding'] + '</td>'
+    vuln_info += '</tr>'
 #find highest severity and set it for vuln level
-    if finding['severity'] == 'LOW' and severity == 1:
-        severity = 2 
-    if finding['severity'] == 'MEDIUM' and (severity == 1 or severity == 2):
-        severity = 3
-    if finding['severity'] == 'HIGH' and (severity == 1 or severity == 2 or severity == 3):
-        severity = 4
+    if info['severity'] == 'LOW' and vuln_sev == 1:
+        vuln_sev = 2 
+    if info['severity'] == 'MEDIUM' and (vuln_sev == 1 or vuln_sev == 2):
+        vuln_sev = 3
+    if info['severity'] == 'HIGH' and (vuln_sev == 1 or vuln_sev == 2 or vuln_sev == 3):
+        vuln_sev = 4
+vuln_info += '</table>'
 
-details += '</table>'
+prot_info = 'Insecure protocols detected'
+for info in protocols:
+    if info['severity'] not in ['OK', 'INFO']:
+        prot_info += '- ' + info['id'] + ' ' + info['finding']
+        if info['severity'] == 'LOW' and prot_sev == 1:
+            prot_sev = 2 
+        if info['severity'] == 'MEDIUM' and (prot_sev == 1 or prot_sev == 2):
+            prot_sev = 3
+        if info['severity'] == 'HIGH' and (prot_sev == 1 or prot_sev == 2 or prot_sev == 3):
+            prot_sev = 4
 
-# {'id': 'CRIME_TLS', 'severity': 'OK', 'cve': 'CVE-2012-4929', 'cwe': 'CWE-310', 'finding': 'not vulnerable'} 
 
 status_ip = "inactive"
 add_ips = '''INSERT INTO ips (ip,scan_id,status) VALUES (%s,%s,%s)'''
@@ -114,7 +125,7 @@ update_ips_ports = '''INSERT INTO ips_ports (ip_id, port_id)
                 )'''
 
 if hostname == ip:
-    add_vulns = '''INSERT INTO vulnerabilities (ip_id, port_id, summary, severity, details) 
+    add_vulns = '''INSERT INTO vulnerabilities (ip_id, port_id, summary, vuln_sev, vuln_info) 
                 VALUES (
                     (SELECT min(id) from ips where ip= %s ),
                     (SELECT id from ports where port= %s LIMIT 1 ),
@@ -122,7 +133,7 @@ if hostname == ip:
                 ) ON CONFLICT ON CONSTRAINT vulnerabilities_unique DO UPDATE
                 SET summary = EXCLUDED.summary, date_updated= NOW() RETURNING id'''
 else:
-    add_vulns = '''INSERT INTO vulnerabilities (hostname_id, ip_id, port_id, summary, severity, details) 
+    add_vulns = '''INSERT INTO vulnerabilities (hostname_id, ip_id, port_id, summary, vuln_sev, vuln_info) 
                     VALUES (
                         (SELECT id from hosts where hostname= %s ),
                         (SELECT min(id) from ips where ip= %s ),
@@ -161,16 +172,35 @@ if hostname != ip:
 
 if hostname == ip:
     try:
-        cursor.execute(add_vulns, (ip,port,summary,severity,details))
+        cursor.execute(add_vulns, (ip,port,vuln_summary,vuln_sev,vuln_info))
         vuln_id = cursor.fetchone()[0]
         print("ADDED vuln_id:",vuln_id)
         cursor.execute(update_scans_vulns, (scan_id,vuln_id))
     except Exception as err:
         conn.rollback()
         print("VULNS ERROR",ip)
+
+    try:
+        cursor.execute(add_vulns, (ip,port,prot_summary,prot_sev,prot_info))
+        vuln_id = cursor.fetchone()[0]
+        print("ADDED vuln_id:",vuln_id)
+        cursor.execute(update_scans_vulns, (scan_id,vuln_id))
+    except Exception as err:
+        conn.rollback()
+        print("VULNS ERROR",ip)
+
 else:
     try:
-        cursor.execute(add_vulns, (hostname,ip,port,summary,severity,details))
+        cursor.execute(add_vulns, (hostname,ip,port,vuln_summary,vuln_sev,vuln_info))
+        vuln_id = cursor.fetchone()[0]
+        print("ADDED vuln_id:",vuln_id)
+        cursor.execute(update_scans_vulns, (scan_id,vuln_id))
+    except Exception as err:
+        conn.rollback()
+        print("VULNS ERROR",ip)
+
+    try:
+        cursor.execute(add_vulns, (hostname,ip,port,prot_summary,prot_sev,prot_info))
         vuln_id = cursor.fetchone()[0]
         print("ADDED vuln_id:",vuln_id)
         cursor.execute(update_scans_vulns, (scan_id,vuln_id))

@@ -10,7 +10,7 @@ ENV DEBIAN_FRONTEND="noninteractive"
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV TLDEXTRACT_CACHE="/root/tldextract.cache"
-ENV testssl_ver="3.2rc3"
+ENV testssl_ver="3.2rc4"
 ENV PGTT_RESTPORT=8008
 
 ARG TARGETARCH
@@ -24,7 +24,7 @@ ENV PATH="${PATH}:${GOROOT}/bin:${GOPATH}/bin"
 WORKDIR /tools
 
 #Install TestSSL
-RUN git clone --depth 1 https://github.com/drwetter/testssl.sh.git -b v${testssl_ver} /tools/testssl.sh \
+RUN git clone --depth 1 https://github.com/testssl/testssl.sh.git -b v${testssl_ver} /tools/testssl.sh \
     && ln -s /tools/testssl.sh/testssl.sh /usr/local/bin/testssl
 
 COPY scripts/* /usr/local/bin/

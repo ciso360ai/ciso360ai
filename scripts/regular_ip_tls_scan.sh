@@ -6,7 +6,7 @@ docker exec -i scan_domain /bin/bash -c "psql \$PGTT_URL << EOF
 INSERT INTO timetable.chain 
     (chain_name, run_at, max_instances, timeout, live, self_destruct, exclusive_execution, client_name)
     VALUES 
-    ('regular_ip_tls_scan','0 * * * 6', 1, 0, true, false, false, 'scan_tls');
+    ('regular_ip_tls_scan','30 1 1 * *', 1, 0, true, false, false, 'scan_tls');
 
 EOF"
 
