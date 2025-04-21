@@ -83,9 +83,10 @@ for info in vulnerabilities:
         vuln_sev = 4
 vuln_info += '</table>'
 
-prot_info = 'Insecure protocols detected'
+prot_info = 'Insecure protocols detected:'
 for info in protocols:
     if info['severity'] not in ['OK', 'INFO']:
+        prot_info += '<br>'
         prot_info += '- ' + info['id'] + ' ' + info['finding']
         if info['severity'] == 'LOW' and prot_sev == 1:
             prot_sev = 2 
@@ -125,7 +126,7 @@ update_ips_ports = '''INSERT INTO ips_ports (ip_id, port_id)
                 )'''
 
 if hostname == ip:
-    add_vulns = '''INSERT INTO vulnerabilities (ip_id, port_id, summary, vuln_sev, vuln_info) 
+    add_vulns = '''INSERT INTO vulnerabilities (ip_id, port_id, summary, severity, details)
                 VALUES (
                     (SELECT min(id) from ips where ip= %s ),
                     (SELECT id from ports where port= %s LIMIT 1 ),
@@ -133,7 +134,7 @@ if hostname == ip:
                 ) ON CONFLICT ON CONSTRAINT vulnerabilities_unique DO UPDATE
                 SET summary = EXCLUDED.summary, date_updated= NOW() RETURNING id'''
 else:
-    add_vulns = '''INSERT INTO vulnerabilities (hostname_id, ip_id, port_id, summary, vuln_sev, vuln_info) 
+    add_vulns = '''INSERT INTO vulnerabilities (hostname_id, ip_id, port_id, summary, severity, details) 
                     VALUES (
                         (SELECT id from hosts where hostname= %s ),
                         (SELECT min(id) from ips where ip= %s ),
