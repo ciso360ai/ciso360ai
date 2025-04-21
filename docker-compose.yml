@@ -47,7 +47,6 @@ services:
       CACHE_TTL: "5s"
       REDIS: "redis://cache:6379"
     volumes:
-      - ./api/extensions:/directus/extensions
       - ./api/migrations:/directus/migrations
       - ./api/uploads:/directus/uploads
       - ./results:/results
@@ -55,6 +54,12 @@ services:
       - db
       - proxy
       - internal
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://127.0.0.1:8055/server/health || exit 1
+      interval: 15s
+      timeout: 15s
+      retries: 3
+      start_period: 15s
 
   cache:
     image: redis:7-alpine
@@ -156,6 +161,36 @@ services:
       - ./scan_email/config:/scan_domain/config
     networks:
       - internal
+
+  init_service:
+    image: ghcr.io/ciso360ai/scan_image:latest
+    container_name: init_service
+    restart: no
+    depends_on:
+      api:
+        condition: service_healthy
+    volumes:
+      - ./scripts:/scripts
+    environment:
+      PGTT_URL: "postgres://${PG1_USER:-root}:${PG1_PASS}@${PG1_HOST:-postgres}:5432/${PG1_DB}?sslmode=require"
+    entrypoint: |
+      /bin/sh -c '
+      # must use $$ for variable expansion in docker-compose
+      PSQL_CMD="psql $${PGTT_URL} -tAc"
+      INIT_STATUS=$($$PSQL_CMD "SELECT EXISTS (SELECT 1 FROM organisations);")
+      if [ "$$INIT_STATUS" != "t" ]; then
+        echo "Running post-startup fixes..."
+        for sql_file in /scripts/*.sql; do
+          echo "Processing file $${sql_file}"
+          cat "$${sql_file}" | psql $${PGTT_URL}
+        done
+        echo "Initialization completed."
+      else
+        echo "Initialization already done."
+      fi
+      '
+    networks:
+      - db
 
 networks:
   proxy:
