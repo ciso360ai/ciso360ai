@@ -61,6 +61,12 @@ services:
       - internal
       - db
 
+  init_service:
+    environment:
+      PGTT_URL: "postgres://root:${PG1_PASS}@postgres:5432/${PG1_DB}"
+    networks:
+      - db
+
 networks:
   proxy:
   db:
