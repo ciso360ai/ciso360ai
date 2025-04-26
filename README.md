@@ -121,12 +121,9 @@ Wait until all containers are started:
 ```
 api INFO: Server started at http://0.0.0.0:8055
 ```
-IMPORTANT, once the system is up, add constraints, a one off to provision the instance database. 
-Run in a separate console from the project folder:
-```
-./scripts/fix_constraints.sh
-```
+**IMPORTANT:** once the system is up, the init container will run a one off provision script for the database (setting defaults, constraints, triggers, etc)
 
+Check docker logs (docker compose logs -f) to confirm the init container finished adding the SQL scripts before adding the first target
 
 For performance it may be useful to run this as root
 ```
