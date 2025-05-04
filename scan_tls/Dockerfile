@@ -20,8 +20,6 @@ ENV GOROOT="/usr/local/go"
 ENV GOPATH=$HOME/go
 ENV PATH="${PATH}:${GOROOT}/bin:${GOPATH}/bin"
 
-ENV TIMEOUT_SHORT=270
-
 # Make directory for app
 WORKDIR /tools
 
