@@ -23,7 +23,7 @@ ENV PATH="${PATH}:${GOROOT}/bin:${GOPATH}/bin"
 WORKDIR /tools
 
 #Add configs
-RUN mkdir /root/.config
+RUN mkdir -p /root/.config
 COPY config/* /root/.config/
 
 RUN echo -e "ENABLED=1\nIGNORE_RESOLVCONF=yes" > /etc/default/dnsmasq
