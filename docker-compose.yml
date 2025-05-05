@@ -62,7 +62,7 @@ services:
       start_period: 15s
 
   cache:
-    image: redis:7-alpine
+    image: redis:8-alpine
     container_name: cache
     restart: always
     healthcheck:
