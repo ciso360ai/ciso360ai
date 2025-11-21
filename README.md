@@ -117,13 +117,20 @@ docker compose up -d
 ```
 
 This will pull or build the local containers and start the app...
-Wait until all containers are started:
-```
-api INFO: Server started at http://0.0.0.0:8055
-```
+
 **IMPORTANT:** once the system is up, the init container will run a one off provision script for the database (setting defaults, constraints, triggers, etc)
 
 Check docker logs (docker compose logs -f) to confirm the init container finished adding the SQL scripts before adding the first target
+
+Wait until all containers are started and see the docker logs:
+
+```bash
+init_service     | INSERT 0 1
+init_service     | Initialization completed
+init_service     | 
+init_service     | Login with .env admin creds to: https://localhost/admin/login
+init_service exited with code 0
+```
 
 For performance it may be useful to run this as root
 ```
@@ -133,9 +140,9 @@ ulimit -u 8192
 
 You can access the CISO360AI UI in a browser: 
 ```
-http://localhost/admin/login
+https://localhost/admin/login
 or
-http://localhost:8055
+http://localhost:8055/admin/login
 ```
 
 ## Usage
@@ -153,7 +160,7 @@ scan_domain  | whois scan
 Check results after some time in the UI, e.g. discovered subdomain hosts
 You may need to change the filters to "Show all items" since assets are added as inactive since the scan is passive
 
-Change the status to active for any inactive host (or add a new active host or IP) to do a TLS scan
+**To start a TLS scan, change the status to active for any inactive host (or add a new active host or IP)**
 
 You should see some activity in the docker logs:
 ```

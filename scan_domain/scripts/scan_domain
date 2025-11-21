@@ -40,9 +40,17 @@ scan(){
     echo -e "\nwayback domains, subdomains and urls"
     log_activity "scan" "domains" #"wayback on $domain"
 
-    curl -sk "https://web.archive.org/cdx/search/cdx?url=*."$domain"&output=txt&fl=original&collapse=urlkey&page=" | sort | uniq | tee urls.wayback
-        cat urls.wayback | awk -F / '{gsub(/:.*/, "", $3); print $3}' | sort | uniq | tee domains.wayback
+    curl -sk "https://web.archive.org/cdx/search/cdx?url=*."$domain"&output=txt&fl=original&collapse=urlkey&page=" | sort -u | tee urls.wayback
+    # Keep only real HTTP(s) results (avoid HTML error pages like 504 Gateway Time-out)
+    grep -E '^https?://' urls.wayback > urls.wayback.valid || true
+
+    if [ -s urls.wayback.valid ]; then
+        awk -F/ '{gsub(/:.*/, "", $3); print $3}' urls.wayback.valid | sort -u | tee domains.wayback
         grep -v -f exclude.txt -x domains.wayback | anew domains.txt
+    else
+        echo "No valid wayback URLs found; skipping wayback domain extraction" >&2
+        : > domains.wayback
+    fi
 
     #amass
 	echo -e "\namass scan"

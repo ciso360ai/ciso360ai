@@ -19,7 +19,6 @@ is_valid_ip() {
         echo "Valid IP address"
         return 0
     else
-        echo "Invalid IP address"
         return 1
     fi
 }
