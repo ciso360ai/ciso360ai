@@ -1,4 +1,4 @@
-FROM directus/directus:11.9.3
+FROM directus/directus:11.13.4
 
 WORKDIR /directus
 USER root
