@@ -188,6 +188,7 @@ services:
       else
         echo "Initialization already done."
       fi
+      echo "\nLogin with .env admin creds to: https://localhost/admin/login"
       '
     networks:
       - db
